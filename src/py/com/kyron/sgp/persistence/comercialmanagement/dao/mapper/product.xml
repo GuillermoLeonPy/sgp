@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="py.com.kyron.sgp.persistence.comercialmanagement.dao.ProductDAO">
+	
+	<resultMap type="ProductDTO" id="ProductDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="product_id" 	  	  	 property="product_id"			javaType="string"/>
+		<result column="product_description" 	  	  	 property="product_description"			javaType="string"/>
+		<result column="increase_over_cost_for_sale_price" 	  	  	 property="increase_over_cost_for_sale_price"			javaType="long"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+		<result column="has_production_process"		 	 property="has_production_process"			javaType="java.lang.Boolean" typeHandler="py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler"/>
+	</resultMap>
+	
+	<sql id="selectProduct">
+			select 
+				product.id,
+				product.product_id,
+				product.product_description,
+				product.increase_over_cost_for_sale_price,
+				product.creation_user,
+				product.creation_date,
+				product.last_modif_user,
+				product.last_modif_date,
+				case when exists (select id from pms_production_process where id_product = product.id and validity_end_date is null) then 'S' else 'N'
+				end has_production_process
+			from
+				pms_product product
+	</sql>
+	
+    <select id="pmsProductIdBySequence" resultType="java.lang.Long" databaseId="postgre">
+			select nextval('pms_product_id_sq')
+    </select>	
+	
+    <select id="insertProductDTO" parameterType="ProductDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_product(
+        			#{id},
+        			#{product_id},
+        			#{product_description},
+        			#{increase_over_cost_for_sale_price},
+        			#{creation_user})
+    </select>
+    
+    <!-- 
+    <select id="updateProductDTO" parameterType="ProductDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_product(
+        			#{id},
+        			#{product_id},
+        			#{product_description},
+        			#{creation_user})
+    </select>
+      -->
+    <select id="listProductDTO" parameterType="ProductDTO" resultMap="ProductDTOMap" databaseId="postgre">
+        <include refid="selectProduct"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and product.id = #{id}
+				</if>
+				<if test="product_id != null">
+					and product.product_id like '%'||upper(trim(#{product_id}))||'%'
+				</if>
+				<if test="product_description != null">
+					and product.product_description like '%'||upper(trim(#{product_description}))||'%'
+				</if>
+		</trim>
+				order by product.product_id
+    </select>
+	
+	<!--
+    <select id="delete" parameterType="ProductDTO">
+        SELECT   a.id       AS id,
+                 a.name     AS name
+        FROM     accounts a
+    </select>
+    
+    <select id="selectBy" parameterType="ProductDTO" resultType="ProductDTO">
+        SELECT   a.id       AS id,
+                 a.name     AS name
+        FROM     accounts a
+    </select>
+     -->    
+</mapper>

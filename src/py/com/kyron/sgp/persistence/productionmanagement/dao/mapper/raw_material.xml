@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="py.com.kyron.sgp.persistence.productionmanagement.dao.RawMaterialDAO">
+	
+	<resultMap type="RawMaterialDTO" id="RawMaterialDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="raw_material_id" 	  	  	 property="raw_material_id"			javaType="string"/>
+		<result column="raw_material_description" 	  	  	 property="raw_material_description"			javaType="string"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+		<result column="has_existence_record"		 	 property="has_existence_record"			javaType="java.lang.Boolean" typeHandler="py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler"/>
+		<result column="has_any_purchase_request"		 	 property="has_any_purchase_request"			javaType="java.lang.Boolean" typeHandler="py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler"/>
+		<result column="has_pending_purchase_request"		 	 property="has_pending_purchase_request"			javaType="java.lang.Boolean" typeHandler="py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler"/>
+		<result column="has_valid_cost_registry"		 	 property="has_valid_cost_registry"			javaType="java.lang.Boolean" typeHandler="py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler"/>
+		<result column="has_existence_with_warning"		 	 property="has_existence_with_warning"			javaType="java.lang.Boolean" typeHandler="py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler"/>
+		<result column="has_existence_out_of_stock"		 	 property="has_existence_out_of_stock"			javaType="java.lang.Boolean" typeHandler="py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler"/>
+	</resultMap>
+	
+	<sql id="selectRawMaterial">
+			select 
+				rawmaterial.id,
+				rawmaterial.raw_material_id,
+				rawmaterial.raw_material_description,
+				rawmaterial.creation_user,
+				rawmaterial.creation_date,
+				rawmaterial.last_modif_user,
+				rawmaterial.last_modif_date,
+				case when exists (select id from pms_raw_material_existence where id_raw_material = rawmaterial.id) then 'S' else 'N'
+				end has_existence_record,
+				case when exists (select id from pms_raw_material_purchase_request where id_raw_material = rawmaterial.id) then 'S' else 'N'
+				end has_any_purchase_request,
+				case when exists (select id from pms_raw_material_purchase_request where id_raw_material = rawmaterial.id and status = 'application.common.status.pending') then 'S' else 'N'
+				end has_pending_purchase_request,
+				case when exists (select id from pms_raw_material_cost where id_raw_material = rawmaterial.id and validity_end_date is null) then 'S' else 'N'
+				end has_valid_cost_registry,
+				case when
+					((exists (select id from pms_raw_material_existence where id_raw_material = rawmaterial.id))
+					and (exists (select id from pms_raw_material_existence where id_raw_material = rawmaterial.id and (calculated_quantity <![CDATA[<]]> 1::numeric) and (efective_quantity > 0::numeric))))
+					then 'S' else 'N'
+				end has_existence_with_warning,
+				case when
+					((exists (select id from pms_raw_material_existence where id_raw_material = rawmaterial.id))
+					and (exists (select id_raw_material from pms_raw_material_existence where id_raw_material = rawmaterial.id group by id_raw_material having sum(efective_quantity) = 0)))
+					then 'S' else 'N'
+				end has_existence_out_of_stock
+			from
+				pms_raw_material rawmaterial
+	</sql>
+	
+    <select id="pmsRawMaterialIdBySequence" resultType="java.lang.Long" databaseId="postgre">
+			select nextval('pms_raw_material_id_sq')
+    </select>	
+	
+    <select id="insertRawMaterialDTO" parameterType="RawMaterialDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_raw_material(
+        			#{id},
+        			#{raw_material_id},
+        			#{raw_material_description},
+        			#{creation_user})
+    </select>
+    
+
+    <select id="listRawMaterialDTO" parameterType="RawMaterialDTO" resultMap="RawMaterialDTOMap" databaseId="postgre">
+        <include refid="selectRawMaterial"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and rawmaterial.id = #{id}
+				</if>
+				<if test="raw_material_id != null">
+					and rawmaterial.raw_material_id like '%'||upper(trim(#{raw_material_id}))||'%'
+				</if>
+				<if test="raw_material_description != null">
+					and rawmaterial.raw_material_description like '%'||upper(trim(#{raw_material_description}))||'%'
+				</if>
+		</trim>
+				order by rawmaterial.raw_material_id
+    </select>
+	
+	<!-- ################################################################################################################## -->
+	<!-- ################################################################################################################## -->
+	<!-- ################################################################################################################## -->
+	<!-- ################################################################################################################## -->
+	
+	<!-- raw material cost  -->
+	
+	
+	<resultMap type="RawMaterialCostDTO" id="RawMaterialCostDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="id_raw_material" 	  	  	 property="id_raw_material"			javaType="long"/>
+		<result column="id_tariff" 	  	  	 property="id_tariff"			javaType="long"/>
+		<result column="tariff_amount" 	  	  	 property="tariff_amount"			javaType="java.math.BigDecimal"/>
+		<result column="purchase_invoice_average_cost" 	  	  	 property="purchase_invoice_average_cost"			javaType="java.math.BigDecimal"/>
+		<result column="registration_date" 	  	  	 property="registration_date"	javaType="java.util.Date"/>
+		<result column="validity_end_date" 	  	  	 property="validity_end_date"	javaType="java.util.Date"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+	</resultMap>
+	
+
+	<sql id="selectRawMaterialCost">
+			select 
+					rmc.id,
+					rmc.id_raw_material,
+					rmc.id_tariff,
+					rmc.tariff_amount,
+					case when rmc.validity_end_date is null then
+						f_unit_price_amount_average_per_raw_material_and_tariff(rmc.id_raw_material,rmc.id_tariff)
+					else null end purchase_invoice_average_cost,
+					rmc.registration_date,
+					rmc.validity_end_date,
+					rmc.creation_user,
+					rmc.creation_date,
+					rmc.last_modif_user,
+					rmc.last_modif_date
+			from
+				pms_raw_material_cost rmc
+	</sql>
+	
+	
+    <select id="pmsRawMaterialCostDTOIdBySequence" resultType="java.lang.Long" databaseId="postgre">
+			select nextval('pms_raw_material_cost_id_sq')
+    </select>
+    
+    <select id="insertRawMaterialCostDTO" parameterType="RawMaterialCostDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT  p_i_pms_raw_material_cost
+        						(#{id},
+        						#{id_raw_material},
+        						#{id_tariff},
+        						#{tariff_amount},
+        						#{registration_date},
+        						#{creation_user})
+    </select>    
+
+    <select id="updateRawMaterialCostDTO" parameterType="RawMaterialCostDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT  p_u_pms_raw_material_cost
+        						(#{id},
+        						#{validity_end_date},
+        						#{last_modif_user})
+    </select>
+    
+    <select id="listRawMaterialCostDTO" parameterType="RawMaterialCostDTO" resultMap="RawMaterialCostDTOMap">
+        <include refid="selectRawMaterialCost"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and rmc.id = #{id}
+				</if>
+				<if test="id_raw_material != null">
+					and rmc.id_raw_material = #{id_raw_material}
+				</if>
+				<if test="active != null and active == true">
+					and rmc.validity_end_date is null
+				</if>
+				<if test="active != null and active == false">
+					and rmc.validity_end_date is not null
+				</if>
+		</trim>
+				order by rmc.validity_end_date desc
+    </select>
+
+    <select id="getRawMaterialCostValidRowId" parameterType="java.lang.Long" resultType="java.lang.Long" databaseId="postgre">
+			select 
+				id 
+			from pms_raw_material_cost 
+				where 
+				id_raw_material = #{id_raw_material}
+				and validity_end_date is null 
+    </select>    
+</mapper>

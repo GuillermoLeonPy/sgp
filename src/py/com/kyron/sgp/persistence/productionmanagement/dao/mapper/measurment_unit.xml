@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="py.com.kyron.sgp.persistence.productionmanagement.dao.MeasurmentUnitDAO">
+	
+	<resultMap type="MeasurmentUnitDTO" id="MeasurmentUnitDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="measurment_unit_id" 	  	  	 property="measurment_unit_id"			javaType="string"/>
+		<result column="measurment_unit_description" 	  	  	 property="measurment_unit_description"			javaType="string"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+	</resultMap>
+	
+	<sql id="selectMeasurmentUnit">
+			select 
+				measurmentunit.id,
+				measurmentunit.measurment_unit_id,
+				measurmentunit.measurment_unit_description,
+				measurmentunit.creation_user,
+				measurmentunit.creation_date,
+				measurmentunit.last_modif_user,
+				measurmentunit.last_modif_date
+			from
+				pms_measurment_unit measurmentunit
+	</sql>
+	
+    <select id="pmsMeasurmentUnitIdBySequence" resultType="java.lang.Long" databaseId="postgre">
+			select nextval('pms_measurment_unit_id_sq')
+    </select>	
+	
+    <select id="insertMeasurmentUnitDTO" parameterType="MeasurmentUnitDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_measurment_unit(
+        			#{id},
+        			#{measurment_unit_id},
+        			#{measurment_unit_description},
+        			#{creation_user})
+    </select>
+    
+    <!-- 
+    <select id="updateMeasurmentUnitDTO" parameterType="MeasurmentUnitDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_measurment_unit(
+        			#{id},
+        			#{measurment_unit_id},
+        			#{measurment_unit_description},
+        			#{creation_user})
+    </select>
+      -->
+    <select id="listMeasurmentUnitDTO" parameterType="MeasurmentUnitDTO" resultMap="MeasurmentUnitDTOMap" databaseId="postgre">
+        <include refid="selectMeasurmentUnit"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and measurmentunit.id = #{id}
+				</if>
+				<if test="measurment_unit_id != null">
+					and measurmentunit.measurment_unit_id like '%'||upper(trim(#{measurment_unit_id}))||'%'
+				</if>
+				<if test="measurment_unit_description != null">
+					and measurmentunit.measurment_unit_description like '%'||upper(trim(#{measurment_unit_description}))||'%'
+				</if>
+		</trim>
+				order by measurmentunit.measurment_unit_id
+    </select>
+	
+	<!--
+    <select id="delete" parameterType="MeasurmentUnitDTO">
+        SELECT   a.id       AS id,
+                 a.name     AS name
+        FROM     accounts a
+    </select>
+    
+    <select id="selectBy" parameterType="MeasurmentUnitDTO" resultType="MeasurmentUnitDTO">
+        SELECT   a.id       AS id,
+                 a.name     AS name
+        FROM     accounts a
+    </select>
+     -->    
+</mapper>

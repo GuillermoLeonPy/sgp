@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="py.com.kyron.sgp.persistence.applicationsecurity.dao.ApplicationSecurityDAO">
+	
+	<resultMap type="ApplicationSecurityProgramDTO" id="ApplicationSecurityProgramDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="program_key" 	  	  	 property="program_key"			javaType="string"/>		
+	</resultMap>
+	
+	<resultMap type="ApplicationSecurityRolDTO" id="ApplicationSecurityRolDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="role_name" 	  	  	 property="role_name"			javaType="string"/>
+		<result column="role_description" 	  	  	 property="role_description"	javaType="string"/>
+		<result column="is_editable"		 	 property="is_editable"			javaType="java.lang.Boolean" typeHandler="py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler"/>	
+	</resultMap>
+	
+	<resultMap type="ApplicationSecurityRolProgramDTO" id="ApplicationSecurityRolProgramDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="id_app_sec_rol" 	  	  	 property="id_app_sec_rol"			javaType="long"/>
+		<result column="id_app_sec_program" 	  	  	 property="id_app_sec_program"	javaType="long"/>
+		<result column="is_editable"		 	 property="is_editable"			javaType="java.lang.Boolean" typeHandler="py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler"/>	
+	</resultMap>
+	
+	<resultMap type="ApplicationSecurityPersonRolDTO" id="ApplicationSecurityPersonRolDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="id_app_sec_rol" 	  	  	 property="id_app_sec_rol"			javaType="long"/>
+		<result column="id_person" 	  	  	 property="id_person"	javaType="long"/>
+		<result column="is_editable"		 	 property="is_editable"			javaType="java.lang.Boolean" typeHandler="py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler"/>	
+	</resultMap>
+	
+	<!-- select statements -->
+	<!-- select statements -->
+	
+	<sql id="selectApplicationSecurityProgramDTO">
+			select 
+					asp.id,
+					asp.program_key
+			from
+				app_sec_program asp
+	</sql>
+	<sql id="selectApplicationSecurityRolDTO">
+			select 
+					asr.id,
+					asr.role_name,
+					asr.role_description,
+					asr.is_editable
+			from
+				app_sec_rol asr
+	</sql>	
+	<sql id="selectApplicationSecurityRolProgramDTO">
+			select 
+					asrp.id,
+					asrp.id_app_sec_rol,
+					asrp.id_app_sec_program,
+					asrp.is_editable
+			from
+				app_sec_rol_program asrp
+	</sql>	
+	<sql id="selectApplicationSecurityPersonRolDTO">
+			select 
+					aspr.id,
+					aspr.id_app_sec_rol,
+					aspr.id_person,
+					aspr.is_editable
+			from
+				app_sec_person_role aspr
+	</sql>
+	
+	<!-- sequence retrieve vals -->
+	<!-- sequence retrieve vals -->
+	
+    <select id="applicationSecurityProgramDTOIdBySequence" parameterType="long" resultType="java.lang.Long" databaseId="postgre">
+			<!-- select nextval('app_sec_program_id_sq')  -->
+			select f_app_sec_program_id_sq(#{id})
+    </select>    
+    <select id="applicationSecurityRolDTOIdBySequence" parameterType="long" resultType="java.lang.Long" databaseId="postgre">
+			<!--  select nextval('app_sec_rol_id_sq') -->
+			select f_app_sec_rol_id_sq(#{id})
+    </select>    
+    <select id="applicationSecurityRolProgramDTOIdBySequence" parameterType="long" resultType="java.lang.Long" databaseId="postgre">
+			<!--  select nextval('app_sec_rol_program_id_sq') -->
+			select f_app_sec_rol_program_id_sq(#{id})
+    </select>    
+    <select id="applicationSecurityPersonRolDTOIdBySequence" parameterType="long" resultType="java.lang.Long" databaseId="postgre">
+			<!-- select nextval('app_sec_person_role_id_sq')  -->
+			select f_app_sec_person_role_id_sq(#{id})
+    </select>	
+    
+    <!-- insert functions calls -->
+    <!-- insert functions calls -->
+    
+    <select id="insertApplicationSecurityProgramDTO" parameterType="ApplicationSecurityProgramDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT p_i_app_sec_program(#{id},#{program_key})
+    </select>
+    
+            
+    <select id="insertApplicationSecurityRolDTO" parameterType="ApplicationSecurityRolDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT  p_i_app_sec_rol
+        						(#{id},
+        						#{role_name},
+        						#{role_description},
+        						#{is_editable,jdbcType=VARCHAR,typeHandler=py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler})
+    </select>
+
+    <select id="insertApplicationSecurityRolProgramDTO" parameterType="ApplicationSecurityRolProgramDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT  p_i_app_sec_rol_program
+        						(#{id},
+        						#{id_app_sec_rol},
+        						#{id_app_sec_program},
+        						#{is_editable,jdbcType=VARCHAR,typeHandler=py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler})
+    </select>    
+    
+    <select id="insertApplicationSecurityPersonRolDTO" parameterType="ApplicationSecurityPersonRolDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT  p_i_app_sec_person_role
+        						(#{id},
+        						#{id_app_sec_rol},
+        						#{id_person},
+        						#{is_editable,jdbcType=VARCHAR,typeHandler=py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler})
+    </select>    
+
+
+    <select id="listApplicationSecurityProgramDTO" parameterType="ApplicationSecurityProgramDTO" resultMap="ApplicationSecurityProgramDTOMap">
+        <include refid="selectApplicationSecurityProgramDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="program_key != null">
+					and asp.program_key = #{program_key}
+				</if>
+				<if test="id != null">
+					and asp.id = #{id}
+				</if>
+		</trim>
+				order by asp.id
+    </select>
+
+    <select id="listApplicationSecurityRolDTO" parameterType="ApplicationSecurityRolDTO" resultMap="ApplicationSecurityRolDTOMap">
+        <include refid="selectApplicationSecurityRolDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="role_name != null">
+					and asr.role_name = #{role_name}
+				</if>
+				<if test="id != null">
+					and asr.id = #{id}
+				</if>
+				<!-- and asr.is_editable = 'S'  -->
+		</trim>
+				order by asr.role_name
+    </select>
+    
+    <select id="listApplicationSecurityRolProgramDTO" parameterType="ApplicationSecurityRolProgramDTO" resultMap="ApplicationSecurityRolProgramDTOMap">
+        <include refid="selectApplicationSecurityRolProgramDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id_app_sec_rol != null">
+					and asrp.id_app_sec_rol = #{id_app_sec_rol}
+				</if>
+				<!-- <if test="id_app_sec_program != null">
+					and asrp.id_app_sec_program = #{id_app_sec_program}
+				</if>
+				and asrp.is_editable = 'S'  -->
+		</trim>
+				order by asrp.id_app_sec_program
+    </select>
+    
+        <select id="listApplicationSecurityPersonRolDTO" parameterType="ApplicationSecurityPersonRolDTO" resultMap="ApplicationSecurityPersonRolDTOMap">
+        <include refid="selectApplicationSecurityPersonRolDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id_person != null">
+					and aspr.id_person = #{id_person}
+				</if>
+				<!-- and aspr.is_editable = 'S'  -->
+		</trim>
+				order by aspr.id_app_sec_rol
+    </select>
+    <!--    
+    <select id="update" parameterType="ApplicationSecurityProgramDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_u_pms_person(
+							#{id},
+							#{ruc},
+							#{personal_name},
+							#{personal_last_name},
+							#{personal_address},
+							#{personal_email_address},
+							#{personal_telephone_number},
+							#{personal_civil_id_document},
+							#{commercial_name},
+							#{is_functionary,jdbcType=VARCHAR,typeHandler=py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler},
+							#{is_customer,jdbcType=VARCHAR,typeHandler=py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler},
+							#{is_supplier,jdbcType=VARCHAR,typeHandler=py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler},
+							#{creation_user})
+    </select>
+    -->
+    
+    <delete id="deleteApplicationSecurityRolProgramDTO" parameterType="ApplicationSecurityRolProgramDTO" databaseId="postgre">
+		delete from 
+			app_sec_rol_program
+   		where 
+    		id_app_sec_rol = #{id_app_sec_rol}
+    		and
+    		id_app_sec_program = #{id_app_sec_program}
+	</delete>
+
+    <delete id="deleteApplicationSecurityPersonRolDTO" parameterType="ApplicationSecurityPersonRolDTO" databaseId="postgre">
+		delete from 
+			app_sec_person_role
+   		where 
+    		id_app_sec_rol = #{id_app_sec_rol}
+    		and
+    		id_person = #{id_person}
+	</delete>	      
+
+	 
+</mapper>

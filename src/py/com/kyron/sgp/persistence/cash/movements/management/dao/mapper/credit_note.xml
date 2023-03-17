@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="py.com.kyron.sgp.persistence.cash.movements.management.dao.CreditNoteDAO">
+	
+	<resultMap type="CreditNoteDTO" id="CreditNoteDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="id_person" 	  	  	 property="id_person"			javaType="long"/>
+		<result column="id_currency" 	  	  	 property="id_currency"			javaType="long"/>
+		<result column="modified_documens_identifier_numbers" 	  	  	 property="modified_documens_identifier_numbers"			javaType="string"/>
+		<result column="id_branch_office_sale_station" 	  	  	 property="id_branch_office_sale_station"			javaType="long"/>
+		<result column="status" 	  	  	 property="status"			javaType="string"/>
+		<result column="emission_date" 	  	  	 property="emission_date"			javaType="java.util.Date"/>
+		<result column="emission_reason_description" 	  	  	 property="emission_reason_description"			javaType="string"/>
+		<result column="validity_end_date" 	  	  	 property="validity_end_date"			javaType="java.util.Date"/>
+		<result column="cancellation_date" 	  	  	 property="cancellation_date"			javaType="java.util.Date"/>
+		<result column="annulment_date" 	  	  	 property="annulment_date"			javaType="java.util.Date"/>
+		<result column="annulment_reason_description" 	  	  	 property="annulment_reason_description"			javaType="string"/>
+		<result column="identifier_number" 	  	  	 property="identifier_number"			javaType="string"/>
+		<result column="credit_note_stamp_number" 	  	  	 property="credit_note_stamp_number"			javaType="java.math.BigDecimal"/>
+		<result column="id_credit_note_stamping_numeration" 	  	  	 property="id_credit_note_stamping_numeration"			javaType="long"/>
+		<result column="total_amount" 	  	  	 property="total_amount"			javaType="java.math.BigDecimal"/>
+		<result column="value_added_amount" 	  	  	 property="value_added_amount"			javaType="java.math.BigDecimal"/>
+		<result column="total_tax_amount" 	  	  	 property="total_tax_amount"			javaType="java.math.BigDecimal"/>
+		<result column="exempt_amount" 	  	  	 property="exempt_amount"			javaType="java.math.BigDecimal"/>
+		<result column="value_added_tax_10_amount" 	  	  	 property="value_added_tax_10_amount"			javaType="java.math.BigDecimal"/>
+		<result column="value_added_tax_5_amount" 	  	  	 property="value_added_tax_5_amount"			javaType="java.math.BigDecimal"/>
+		<result column="tax_10_amount" 	  	  	 property="tax_10_amount"			javaType="java.math.BigDecimal"/>
+		<result column="tax_5_amount" 	  	  	 property="tax_5_amount"			javaType="java.math.BigDecimal"/>
+		<result column="bussines_name" 	  	  	 property="bussines_name"			javaType="string"/>
+		<result column="bussines_ci_ruc" 	  	  	 property="bussines_ci_ruc"			javaType="string"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+		<result column="credit_note_balance" 	  	  	 property="credit_note_balance"			javaType="java.math.BigDecimal"/>
+		
+
+	</resultMap>
+	
+	<sql id="selectCreditNoteDTO">
+			select 
+					cn.id,
+					cn.id_person,
+					cn.id_currency,
+					cn.modified_documens_identifier_numbers,
+					cn.id_branch_office_sale_station,
+					cn.status,
+					cn.emission_date,
+					cn.emission_reason_description,
+					cn.validity_end_date,
+					cn.cancellation_date,
+					cn.annulment_date,
+					cn.annulment_reason_description,
+					cn.identifier_number,
+					cn.credit_note_stamp_number,
+					cn.id_credit_note_stamping_numeration,
+					cn.total_amount,
+					cn.value_added_amount,
+					cn.total_tax_amount,
+					cn.exempt_amount,
+					cn.value_added_tax_10_amount,
+					cn.value_added_tax_5_amount,
+					cn.tax_10_amount,
+					cn.tax_5_amount,
+					cn.bussines_name,
+					cn.bussines_ci_ruc,
+					cn.creation_user,
+					cn.creation_date,
+					cn.last_modif_user,
+					cn.last_modif_date,
+					cn.credit_note_balance
+					
+			from
+				pms_credit_note cn
+				join
+				pms_credit_note_modified_documents cnmd
+				on 
+				cn.id = cnmd.id_credit_note 
+				
+	</sql>
+	
+    <select id="pmsCreditNoteDTOIdBySequence" resultType="java.lang.Long" databaseId="postgre">
+			select nextval('pms_credit_note_id_sq')
+    </select>	
+    
+    <select id="insertCreditNoteDTO" parameterType="CreditNoteDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_generate_credit_note_by_sale_invoice(#{id},
+														#{id_sale_invoice},
+														#{creation_user})
+    </select>
+
+    
+    <select id="listCreditNoteDTO" parameterType="CreditNoteDTO" resultMap="CreditNoteDTOMap" databaseId="postgre">
+        <include refid="selectCreditNoteDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and cn.id = #{id}
+				</if>
+				<if test="id_person != null">
+					and cn.id_person = #{id_person}
+				</if>
+				<if test="id_sale_invoice != null">
+					and cnmd.id_sale_invoice = #{id_sale_invoice}
+				</if>
+				<if test="hasUsableCreditNoteBalance != null and hasUsableCreditNoteBalance == true">
+					and (cn.status = 'application.common.status.pending' or cn.status = 'application.common.status.partial.balance')
+				</if>
+				<if test="emissionDateBeginFilter != null and emissionDateEndFilter != null">
+					and cn.emission_date between #{emissionDateBeginFilter} and #{emissionDateEndFilter}
+				</if>
+		</trim>
+				order by cn.id
+    </select>
+
+    <!-- ####################################################################################################### -->
+    <!-- ################################## CREDIT NOTE ITEMS ################################################## -->
+    <!-- ####################################################################################################### -->
+
+	<resultMap type="CreditNoteItemDTO" id="CreditNoteItemDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="id_credit_note" 	  	  	 property="id_credit_note"			javaType="long"/>
+		<result column="id_product" 	  	  	 property="id_product"			javaType="long"/>
+		<result column="status" 	  	  	 property="status"			javaType="string"/>
+		<result column="devolution_quantity" 	  	  	 property="devolution_quantity"			javaType="long"/>
+		<result column="cancellation_withdrawal_quantity" 	  	  	 property="cancellation_withdrawal_quantity"			javaType="long"/>
+		<result column="unit_price_amount" 	  	  	 property="unit_price_amount"			javaType="java.math.BigDecimal"/>
+		<result column="exempt_unit_price_amount" 	  	  	 property="exempt_unit_price_amount"			javaType="java.math.BigDecimal"/>
+		<result column="value_added_tax_10_unit_price_amount" 	  	  	 property="value_added_tax_10_unit_price_amount"			javaType="java.math.BigDecimal"/>
+		<result column="value_added_tax_5_unit_price_amount" 	  	  	 property="value_added_tax_5_unit_price_amount"			javaType="java.math.BigDecimal"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+		<result column="id_sale_invoice_item" 	  	  	 property="id_sale_invoice_item"			javaType="long"/>
+	</resultMap>
+	
+	<sql id="selectreditNoteItemDTO">
+			select 
+					cni.id,
+					cni.id_credit_note,
+					cni.id_product,
+					cni.status,
+					cni.devolution_quantity,
+					cni.cancellation_withdrawal_quantity,
+					cni.unit_price_amount,
+					cni.exempt_unit_price_amount,
+					cni.value_added_tax_10_unit_price_amount,
+					cni.value_added_tax_5_unit_price_amount,
+					cni.creation_user,
+					cni.creation_date,
+					cni.last_modif_user,
+					cni.last_modif_date,
+					cni.id_sale_invoice_item
+
+			from
+				pms_credit_note_item cni
+	</sql>
+	
+	<select id="pmsCreditNoteItemDTOIdBySequence" parameterType="long" resultType="java.lang.Long" databaseId="postgre">
+			<!-- select nextval('pms_order_item_id_sq')  -->
+			select f_pms_credit_note_item_id_sq(#{id})
+    </select>
+    
+    <select id="insertCreditNoteItemDTO" parameterType="CreditNoteItemDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_generate_credit_note_item_by_sale_invoice_item(#{id},
+        												#{id_credit_note},
+														#{id_sale_invoice_item},
+														#{cancellation_withdrawal_quantity},
+														#{devolution_quantity},
+														#{creation_user})
+    </select>
+    
+    <select id="listCreditNoteItemDTO" parameterType="CreditNoteItemDTO" resultMap="CreditNoteItemDTOMap" databaseId="postgre">
+        <include refid="selectreditNoteItemDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and cni.id = #{id}
+				</if>
+				<if test="id_credit_note != null">
+					and cni.id_credit_note = #{id_credit_note}
+				</if>
+		</trim>
+				order by cni.id
+    </select>
+    
+    <select id="getCreditNoteStampingNumber" parameterType="CreditNoteDTO" resultType="java.math.BigDecimal" databaseId="postgre">
+			select 
+					sis.sale_invoice_stamping_number
+			from
+					pms_sale_invoice_stamping sis,
+					pms_credit_note_stamping_numeration cnsn,
+					pms_credit_note cn
+			where
+					cn.id_credit_note_stamping_numeration = cnsn.id
+					and cnsn.id_sale_invoice_stamping = sis.id
+					and cn.id = #{id}
+    </select>
+</mapper>

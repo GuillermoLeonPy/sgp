@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="py.com.kyron.sgp.persistence.cash.movements.management.dao.CashMovementsReportDAO">
+    
+    <select id="incomeExpeditureReport" parameterType="IncomeExpeditureReportDTO" resultType="IncomeExpeditureReportDTO" databaseId="postgre">
+		select
+			(ie.order_column * 7) id, 
+			ie.order_column,
+			ie.operational_concept,
+			ie.total_amount,
+			ie.value_added_tax_10_amount,
+			ie.value_added_tax_5_amount,
+			ie.value_added_amount,
+			ie.exempt_amount,
+			ie.tax_10_amount,
+			ie.tax_5_amount,
+			ie.total_tax_amount
+		from f_dates_interval_income_expediture(#{beginDate}, #{endDate}, #{id_currency}) ie   
+		order by ie.order_column
+    </select>
+
+    <select id="purchasesExpeditureReport" parameterType="IncomeExpeditureReportDTO" resultType="IncomeExpeditureReportDTO" databaseId="postgre">
+		select
+			pie.operational_concept,
+			pie.total_amount,
+			pie.value_added_tax_10_amount,
+			pie.value_added_tax_5_amount,
+			pie.value_added_amount,
+			pie.exempt_amount,
+			pie.tax_10_amount,
+			pie.tax_5_amount,
+			pie.total_tax_amount
+		from f_dates_interval_purchase_invoice_expenditure(#{beginDate}, #{endDate}, #{id_currency}) pie
+    </select>
+
+    <select id="salesIncomeReport" parameterType="IncomeExpeditureReportDTO" resultType="IncomeExpeditureReportDTO" databaseId="postgre">
+		select
+			si.operational_concept,
+			si.total_amount,
+			si.value_added_tax_10_amount,
+			si.value_added_tax_5_amount,
+			si.value_added_amount,
+			si.exempt_amount,
+			si.tax_10_amount,
+			si.tax_5_amount,
+			si.total_tax_amount
+		from f_dates_interval_sale_invoice_income(#{beginDate}, #{endDate}, #{id_currency}) si
+    </select>
+    
+    <select id="productCostSaleComparisonReport" parameterType="ProductCostSaleComparisonDTO" resultType="ProductCostSaleComparisonDTO" databaseId="postgre">
+		select
+			pscc.id,
+			pscc.product,
+			pscc.product_increase_over_cost_for_sale_price,  
+			pscc.order_item_product_unit_manufacture_cost,
+			pscc.order_item_unit_price_amount,
+			pscc.sale_invoice_item_unit_price_amount,
+			pscc.sale_invoice_item_quantity,
+			pscc.sale_price_acumulated,
+			pscc.production_cost_acumulated,
+			pscc.profit,
+			pscc.sale_date
+		from f_dates_interval_product_sale_cost_comparison(#{beginDate}, #{endDate}, #{id_currency}) pscc
+    </select>
+    
+	 
+    <select id="manPowerExpenditurePerFunctionaryReport" parameterType="ManPowerExpenditurePerFunctionaryDTO" resultType="ManPowerExpenditurePerFunctionaryDTO" databaseId="postgre">
+		select
+				person.personal_civil_id_document,
+				person.personal_last_name||', '||person.personal_name functionary_name,
+				xxx.activities_carried_out_count,
+				xxx.sum_activity_expected_minutes_quantity,
+				xxx.sum_activity_effective_minutes_quantity,
+				case when xxx.sum_activity_effective_minutes_quantity <![CDATA[<]]> xxx.sum_activity_expected_minutes_quantity then
+				(xxx.sum_activity_expected_minutes_quantity - xxx.sum_activity_effective_minutes_quantity)
+				else 0::numeric end saved_minutes,
+				xxx.sum_man_power_requeriment_minutes_quantity,
+				xxx.sum_man_power_cost
+		from pms_person person,
+			(select 
+				fdimpepf.id_person,
+				count(fdimpepf.id_production_activity) activities_carried_out_count,
+				sum(fdimpepf.activity_expected_minutes_quantity) sum_activity_expected_minutes_quantity,
+				sum(fdimpepf.activity_effective_minutes_quantity) sum_activity_effective_minutes_quantity,
+				sum(fdimpepf.man_power_requeriment_minutes_quantity) sum_man_power_requeriment_minutes_quantity,
+				sum(fdimpepf.man_power_cost) sum_man_power_cost
+			from 
+				f_dates_interval_man_power_expenditure_per_functionary
+				(#{beginDate}, #{endDate}, #{id_currency}) fdimpepf
+			group by
+			fdimpepf.id_person) xxx
+		where person.id = xxx.id_person;
+    </select> 
+</mapper>

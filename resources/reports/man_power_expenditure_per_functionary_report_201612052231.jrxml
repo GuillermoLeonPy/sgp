@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2016-12-05T23:06:08 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="man_power_expenditure_per_functionary_report_201612052231" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="50d2cba6-05fe-4963-b652-2a941d2cd49d">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter (3)"/>
+	<parameter name="main_title_label" class="java.lang.String"/>
+	<parameter name="report_emission_date_label" class="java.lang.String"/>
+	<parameter name="report_emission_date" class="java.lang.String"/>
+	<parameter name="currency_label" class="java.lang.String"/>
+	<parameter name="currency" class="java.lang.String"/>
+	<parameter name="begin_date_label" class="java.lang.String"/>
+	<parameter name="begin_date" class="java.lang.String"/>
+	<parameter name="end_date_label" class="java.lang.String"/>
+	<parameter name="end_date" class="java.lang.String"/>
+	<parameter name="personal_civil_id_document_label" class="java.lang.String"/>
+	<parameter name="functionary_name_label" class="java.lang.String"/>
+	<parameter name="activities_carried_out_count_label" class="java.lang.String"/>
+	<parameter name="sum_activity_expected_minutes_quantity_label" class="java.lang.String"/>
+	<parameter name="sum_activity_effective_minutes_quantity_label" class="java.lang.String"/>
+	<parameter name="saved_minutes_label" class="java.lang.String"/>
+	<parameter name="sum_man_power_cost_label" class="java.lang.String"/>
+	<parameter name="total_activities_carried_out_count_formatted" class="java.lang.String"/>
+	<parameter name="total_sum_activity_expected_minutes_quantity_formatted" class="java.lang.String"/>
+	<parameter name="total_sum_activity_effective_minutes_quantity_formatted" class="java.lang.String"/>
+	<parameter name="total_saved_minutes_formatted" class="java.lang.String"/>
+	<parameter name="total_sum_man_power_cost_formatted" class="java.lang.String"/>
+	<parameter name="totals_label" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="personal_civil_id_document_formatted" class="java.lang.String"/>
+	<field name="functionary_name" class="java.lang.String"/>
+	<field name="activities_carried_out_count_formatted" class="java.lang.String"/>
+	<field name="sum_activity_expected_minutes_quantity_formatted" class="java.lang.String"/>
+	<field name="sum_activity_effective_minutes_quantity_formatted" class="java.lang.String"/>
+	<field name="saved_minutes_formatted" class="java.lang.String"/>
+	<field name="sum_man_power_cost_formatted" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="73" splitType="Stretch">
+			<textField>
+				<reportElement x="80" y="10" width="400" height="60" uuid="ddca9fd0-3f0b-415a-b738-31497964218d"/>
+				<textElement textAlignment="Center">
+					<font size="22" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{main_title_label}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="117" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="10" width="120" height="20" uuid="06c26fbd-6487-4cf8-ae3e-5576eeb5dec1"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{report_emission_date_label}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="130" y="10" width="20" height="20" uuid="746cc8b8-8ceb-462a-88fd-9af546d1357b"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<text><![CDATA[ : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="160" y="10" width="120" height="20" uuid="ab8e5c9d-ddc0-4cb9-b3b6-7609bd7cb6f2"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{report_emission_date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="40" width="120" height="20" uuid="3bf0fe80-4e4e-4bd9-85a1-2e307ac2060b"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{begin_date_label}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="130" y="40" width="20" height="20" uuid="48ec6038-de26-4538-aeef-0394eae62bc4"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[ : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="160" y="40" width="120" height="20" uuid="d626d925-2976-4e7e-a60b-499b2156ef66"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{begin_date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="340" y="10" width="100" height="20" uuid="7c18ed10-f94f-46d7-911d-3c29025c4e6c"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{currency_label}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="450" y="10" width="10" height="20" uuid="3c1184c8-e460-41a1-8151-e31da677c60a"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[ : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="470" y="10" width="80" height="20" uuid="3a84027f-d42c-4442-9d14-0a94e792f17b"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{currency}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="70" width="120" height="20" uuid="85b2b59b-8389-4afe-8177-84c24669cb59"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{end_date_label}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="130" y="70" width="20" height="20" uuid="f93a1063-3847-4954-8e3e-c0f6a5d05282"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[ : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="160" y="70" width="120" height="20" uuid="37bbc5a4-3780-449d-8820-6d03be570922"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{end_date}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="78" height="30" uuid="b9845b3b-3091-4ccf-8d4d-b40f9dadc63d">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{personal_civil_id_document_label}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="78" y="0" width="78" height="30" uuid="3260b61d-aa82-4e3e-9145-47e1d706cc83"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{functionary_name_label}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="156" y="0" width="78" height="30" uuid="6f01cd8a-3cb7-4e56-9799-70b72c4f09aa"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{activities_carried_out_count_label}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="234" y="0" width="78" height="30" uuid="e345a1ec-6f40-45c2-9751-2a40df9f7ddc"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{sum_activity_expected_minutes_quantity_label}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="312" y="0" width="78" height="30" uuid="f9bd8a70-2571-4303-959c-ac7bd15ec645"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{sum_activity_effective_minutes_quantity_label}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="390" y="0" width="78" height="30" uuid="0c285fd9-0af7-4cca-9b5c-741db034481d">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{saved_minutes_label}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="468" y="0" width="78" height="30" uuid="ebc76fbb-b6d1-4e94-a835-489e56ac3183">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{sum_man_power_cost_label}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="78" height="30" uuid="e0975c89-e814-4a3c-b286-b568d1bea1de">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{personal_civil_id_document_formatted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="78" y="0" width="78" height="30" uuid="e54c5cb2-08e5-4507-b4b2-baa947018bde"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{functionary_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="156" y="0" width="78" height="30" uuid="fe96bad8-b2dd-43fa-b50c-0f9692fe2aa5"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{activities_carried_out_count_formatted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="234" y="0" width="78" height="30" uuid="9c05b62f-01b6-4448-8602-62241ff6375b"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_activity_expected_minutes_quantity_formatted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="312" y="0" width="78" height="30" uuid="14b0e4c7-8bea-4a66-8cd9-99ce14109cca"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_activity_effective_minutes_quantity_formatted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="390" y="0" width="78" height="30" uuid="a615b602-5bdc-4551-b471-f4a1dce70445">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{saved_minutes_formatted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="468" y="0" width="78" height="30" uuid="c44d5191-eaa9-4bdd-a1ec-f8d45d63a6ef">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_man_power_cost_formatted}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement x="156" y="0" width="78" height="30" uuid="7d4e4883-7cb0-4093-b9b3-f7f86fc042af"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{total_activities_carried_out_count_formatted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="234" y="0" width="78" height="30" uuid="7a8426a9-e75e-43de-9d19-ac8b8f4c668b"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{total_sum_activity_expected_minutes_quantity_formatted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="312" y="0" width="78" height="30" uuid="f33b359a-3977-4d9e-b894-c3dc8fc89641"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{total_sum_activity_effective_minutes_quantity_formatted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="390" y="0" width="78" height="30" uuid="a15bee11-bff7-4bc5-b435-26f9049b366d">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{total_saved_minutes_formatted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="468" y="0" width="78" height="30" uuid="2972edcc-a036-4e9b-8552-2cb2542ead0e">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{total_sum_man_power_cost_formatted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="78" y="0" width="78" height="30" uuid="bfe1dc5c-b103-4809-891f-cbef9932e00d"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{totals_label}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+</jasperReport>

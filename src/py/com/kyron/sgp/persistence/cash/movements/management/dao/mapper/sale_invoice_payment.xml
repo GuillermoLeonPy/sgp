@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="py.com.kyron.sgp.persistence.cash.movements.management.dao.SaleInvoicePaymentDAO">
+
+	<resultMap type="SaleInvoicePaymentDTO" id="SaleInvoicePaymentDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="id_sale_invoice" 	  	  	 property="id_sale_invoice"			javaType="long"/>
+		<result column="id_currency" 	  	  	 property="id_currency"			javaType="long"/>
+		<result column="status" 	  	  	 property="status"			javaType="string"/>
+		<result column="amount" 	  	  	 property="amount"			javaType="java.math.BigDecimal"/>
+		<result column="sale_invoice_balance" 	  	  	 property="sale_invoice_balance"			javaType="java.math.BigDecimal"/>
+		<result column="payment_number" 	  	  	 property="payment_number"			javaType="long"/>
+		<result column="registration_date"    	 property="registration_date"			javaType="java.util.Date"/>
+		<result column="payment_due_date"    	 property="payment_due_date"			javaType="java.util.Date"/>
+		<result column="cancellation_date"    	 property="cancellation_date"			javaType="java.util.Date"/>
+		<result column="annulment_date"    	 property="annulment_date"			javaType="java.util.Date"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+	</resultMap>
+	
+	<sql id="selectSaleInvoicePaymentDTO">
+			select 
+					sip.id,
+					sip.id_sale_invoice,
+					sip.id_currency,
+					sip.status,
+					sip.amount,
+					sip.sale_invoice_balance,
+					sip.payment_number,
+					sip.registration_date,
+					sip.payment_due_date,
+					sip.cancellation_date,
+					sip.annulment_date,
+					sip.creation_user,
+					sip.creation_date,
+					sip.last_modif_user,
+					sip.last_modif_date					
+			from
+				pms_sale_invoice_payment sip
+	</sql>
+	
+	
+    <select id="insertSaleInvoicePaymentDTO" parameterType="SaleInvoicePaymentDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_sale_invoice_payment(
+								#{id_sale_invoice},
+								#{creation_user})
+    </select>
+
+    <select id="reGenerateSaleInvoicePaymentDTO" parameterType="SaleInvoicePaymentDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_regenerate_sale_invoice_payment(
+								#{id_sale_invoice},
+								#{creation_user})
+    </select>
+    
+    <select id="effectuateSaleInvoicePayment" parameterType="SaleInvoicePaymentDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_effectuate_sale_invoice_payment(
+								#{id},
+								#{id_credit_note},
+								#{last_modif_user})
+    </select>
+	
+    <select id="listSaleInvoicePaymentDTO" parameterType="SaleInvoicePaymentDTO" resultMap="SaleInvoicePaymentDTOMap" databaseId="postgre">
+        <include refid="selectSaleInvoicePaymentDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and sip.id = #{id}
+				</if>
+				<if test="id_sale_invoice != null">
+					and sip.id_sale_invoice = #{id_sale_invoice}
+				</if>
+		</trim>
+				order by sip.id
+    </select>
+    
+    <!-- ####################################################################################################### -->
+    <!-- ################################## CASH RECEIPT DOCUMENT ############################################## -->
+    <!-- ####################################################################################################### -->
+
+	<resultMap type="CashReceiptDocumentDTO" id="CashReceiptDocumentDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="id_sale_invoice_payment" 	  	  	 property="id_sale_invoice_payment"			javaType="long"/>
+		<result column="id_currency" 	  	  	 property="id_currency"			javaType="long"/>
+		<result column="id_person" 	  	  	 property="id_person"			javaType="long"/>
+		<result column="identifier_number" 	  	  	 property="identifier_number"			javaType="string"/>
+		<result column="bussines_name" 	  	  	 property="bussines_name"			javaType="string"/>
+		<result column="bussines_ci_ruc" 	  	  	 property="bussines_ci_ruc"			javaType="string"/>
+		<result column="registration_date"    	 property="registration_date"			javaType="java.util.Date"/>
+		<result column="amount" 	  	  	 property="amount"			javaType="java.math.BigDecimal"/>	
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+		<result column="id_purchase_invoice_payment" 	  	  	 property="id_purchase_invoice_payment"			javaType="long"/>
+		<result column="emission_date"    	 property="emission_date"			javaType="java.util.Date"/>
+	</resultMap>
+	
+	<sql id="selectCashReceiptDocumentDTO">
+			select 
+				crd.id,
+				crd.id_sale_invoice_payment,
+				crd.id_currency,
+				crd.id_person,
+				crd.identifier_number,
+				crd.bussines_name,
+				crd.bussines_ci_ruc,
+				crd.registration_date,
+				crd.amount,
+				crd.creation_user,
+				crd.creation_date,
+				crd.last_modif_user,
+				crd.last_modif_date,
+				crd.id_purchase_invoice_payment,
+				crd.emission_date
+				
+			from
+				pms_cash_receipt_document crd
+	</sql>   
+	
+    <select id="listCashReceiptDocumentDTO" parameterType="CashReceiptDocumentDTO" resultMap="CashReceiptDocumentDTOMap" databaseId="postgre">
+        <include refid="selectCashReceiptDocumentDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and crd.id = #{id}
+				</if>
+				<if test="id_sale_invoice_payment != null">
+					and crd.id_sale_invoice_payment = #{id_sale_invoice_payment}
+				</if>
+				<if test="id_purchase_invoice_payment != null">
+					and crd.id_purchase_invoice_payment = #{id_purchase_invoice_payment}
+				</if>
+		</trim>
+				order by crd.id
+    </select>
+    
+</mapper>

@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="py.com.kyron.sgp.persistence.stockmanagement.dao.ProductDepositMovementDAO">
+
+	<sql id="selectSaleInvoiceProductDeliverablesDTO">
+			select 
+					vsipd.id_sale_invoice,
+					vsipd.invoice_identifier_number,
+					vsipd.invoice_status,
+					vsipd.id_person,
+					vsipd.invoice_product_physical_quantity_in_stock,
+					vsipd.invoice_product_delivered_quantity,
+					vsipd.invoice_product_returned_quantity_stock,
+					vsipd.id_order,
+					vsipd.order_identifier_number,
+					vsipd.order_status,
+					vsipd.invoice_product_exigible_quantity,
+					vsipd.order_product_canceled_entering_production,
+					vsipd.order_product_quantity_pending_to_production,
+					vsipd.order_product_quantity_in_progress,
+					vsipd.order_product_finished_quantity
+			from
+					v_sale_invoice_product_deliverables vsipd
+	</sql>
+	
+    <select id="listSaleInvoiceProductDeliverablesDTO" parameterType="SaleInvoiceProductDeliverablesDTO" resultType="SaleInvoiceProductDeliverablesDTO" databaseId="postgre">
+        <include refid="selectSaleInvoiceProductDeliverablesDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="invoice_identifier_number != null">
+					and vsipd.invoice_identifier_number = #{invoice_identifier_number}
+				</if>
+				<if test="id_sale_invoice != null">
+					and vsipd.id_sale_invoice = #{id_sale_invoice}
+				</if>
+				<if test="id_person != null">
+					and vsipd.id_person = #{id_person}
+				</if>
+		</trim>
+    </select>
+    
+    	
+	<!-- ################################################################################################################## -->
+	<!-- ################################################################################################################## -->
+	<!-- ################################################################################################################## -->
+    
+	<sql id="selectSaleInvoiceItemProductDeliverablesDTO">
+			select 
+					vsiipd.id_order,
+					vsiipd.id_order_item,
+					vsiipd.id_sale_invoice,
+					vsiipd.id_sale_invoice_item,
+					vsiipd.id_product,
+					vsiipd.product_id,
+					vsiipd.ord_item_canceled_entering_production,
+					vsiipd.ord_item_pending_to_production,
+					vsiipd.ord_item_in_progress_quantity,
+					vsiipd.invoice_item_total_exigible_quantity,
+					vsiipd.invoice_item_remain_exigible_quantity,
+					vsiipd.invoice_item_delivered_quantity,
+					vsiipd.invoice_item_product_stock_quantity,
+					vsiipd.invoice_item_returned_quantity_stock
+			from
+					v_sale_invoice_item_product_deliverables vsiipd
+	</sql>
+	
+    <select id="listSaleInvoiceItemProductDeliverablesDTO" parameterType="SaleInvoiceItemProductDeliverablesDTO" resultType="SaleInvoiceItemProductDeliverablesDTO" databaseId="postgre">
+        <include refid="selectSaleInvoiceItemProductDeliverablesDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+				<if test="id_sale_invoice != null">
+					and vsiipd.id_sale_invoice = #{id_sale_invoice}
+				</if>
+		</trim>
+    </select>
+    
+   	<select id="pmsProductDepositMovementIdentifierNumberBySequence" resultType="java.lang.Long" databaseId="postgre">
+			select nextval('pms_product_deposit_movement_identifier_number_sq')
+    </select>
+    
+    <select id="effectuateProductDeliverSaleInvoiceItemProductDeliverablesDTO" parameterType="SaleInvoiceItemProductDeliverablesDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_effectuate_product_deliver(
+        			#{product_deposit_movement_identifier_number},
+        			#{id_order},
+        			#{id_order_item},
+        			#{id_sale_invoice},
+        			#{id_sale_invoice_item},
+        			#{deliver_quantity},
+        			#{last_modif_user})
+    </select>
+    
+    	
+	<!-- ################################################################################################################## -->
+	<!-- ################################################################################################################## -->
+	<!-- ################################################################################################################## -->
+	
+		<sql id="selectSaleInvoiceProductDepositMovementDTO">
+			select 
+					sipdm.id,
+					sipdm.id_sale_invoice,
+					sipdm.sale_invoice_identifier_number,
+					sipdm.movement_date,
+					sipdm.movement_type,
+					sipdm.product_deposit_movement_identifier_number,
+					sipdm.creation_user,
+					sipdm.creation_date
+			from
+					pms_sale_invoice_product_deposit_movement sipdm
+	</sql>
+	
+    <select id="listSaleInvoiceProductDepositMovementDTO" parameterType="SaleInvoiceProductDepositMovementDTO" resultType="SaleInvoiceProductDepositMovementDTO" databaseId="postgre">
+        <include refid="selectSaleInvoiceProductDepositMovementDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="product_deposit_movement_identifier_number != null">
+					and sipdm.product_deposit_movement_identifier_number = #{product_deposit_movement_identifier_number}
+				</if>
+		</trim>
+    </select>
+    	
+	<!-- ################################################################################################################## -->
+	<!-- ################################################################################################################## -->
+	<!-- ################################################################################################################## -->
+	
+		<sql id="selectSaleInvoiceItemProductDepositMovementDTO">
+			select 
+					siipdm.id,
+					siipdm.id_sale_invoice_product_deposit_movement,
+					siipdm.id_sale_invoice_item,
+					siipdm.id_product,
+					siipdm.product_id,
+					siipdm.quantity
+			from
+					pms_si_item_product_deposit_movement siipdm
+	</sql>
+	
+    <select id="listSaleInvoiceItemProductDepositMovementDTO" parameterType="SaleInvoiceItemProductDepositMovementDTO" resultType="SaleInvoiceItemProductDepositMovementDTO" databaseId="postgre">
+        <include refid="selectSaleInvoiceItemProductDepositMovementDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id_sale_invoice_product_deposit_movement != null">
+					and siipdm.id_sale_invoice_product_deposit_movement = #{id_sale_invoice_product_deposit_movement}
+				</if>
+		</trim>
+    </select>
+    
+	<!-- ################################################################################################################## -->
+	<!-- ################################################################################################################## -->
+	<!-- ################################################################################################################## -->
+	
+		<sql id="selectSIItemPDMProductInstanceInvolvedDTO">
+			select 
+					siipdm_pii.id_si_item_product_deposit_movement
+					siipdm_pii.product_instance_unique_number
+			from
+					pms_siipdm_product_instances_involved siipdm_pii
+		</sql>
+	
+    <select id="listSIItemPDMProductInstanceInvolvedDTO" parameterType="SIItemPDMProductInstanceInvolvedDTO" resultType="SIItemPDMProductInstanceInvolvedDTO" databaseId="postgre">
+        <include refid="selectSIItemPDMProductInstanceInvolvedDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id_si_item_product_deposit_movement != null">
+					and siipdm_pii.id_si_item_product_deposit_movement = #{id_si_item_product_deposit_movement}
+				</if>
+		</trim>
+    </select>
+
+    <select id="listSIItemPDMProductInstanceInvolvedDTOBySaleInvoiceItemProductDeliverablesDTO" parameterType="SaleInvoiceItemProductDeliverablesDTO" resultType="SIItemPDMProductInstanceInvolvedDTO" databaseId="postgre">
+		select
+			siipdmpii.id_si_item_product_deposit_movement,
+			siipdmpii.product_instance_unique_number
+		from
+			pms_siipdm_product_instances_involved siipdmpii,
+			pms_si_item_product_deposit_movement siipdm,
+			pms_sale_invoice_product_deposit_movement sipdm
+		where
+			siipdmpii.id_si_item_product_deposit_movement = siipdm.id
+			and siipdm.id_sale_invoice_product_deposit_movement = sipdm.id
+			and siipdm.id_sale_invoice_item = #{id_sale_invoice_item}
+			and sipdm.id_sale_invoice = #{id_sale_invoice}
+			and sipdm.product_deposit_movement_identifier_number = #{product_deposit_movement_identifier_number} 
+			and sipdm.movement_type = 'application.common.storage.operation.outcome'
+		order by siipdmpii.product_instance_unique_number
+	</select>
+
+    			
+    <select id="listProductInstancesReturnableByCreditNoteItemDTO" parameterType="CreditNoteItemDTO" resultType="SIItemPDMProductInstanceInvolvedDTO" databaseId="postgre">
+		select
+			siipdmpii.id_si_item_product_deposit_movement,
+			siipdmpii.product_instance_unique_number
+		from
+			pms_siipdm_product_instances_involved siipdmpii,
+			pms_si_item_product_deposit_movement siipdm,
+			pms_sale_invoice_product_deposit_movement sipdm
+		where
+			siipdmpii.id_si_item_product_deposit_movement = siipdm.id
+			and siipdm.id_sale_invoice_product_deposit_movement = sipdm.id
+			and siipdm.id_sale_invoice_item = #{id_sale_invoice_item}
+			and sipdm.id_sale_invoice = #{id_sale_invoice}
+			and sipdm.movement_type = 'application.common.storage.operation.outcome'
+			and siipdmpii.product_instance_unique_number not in
+				(select
+					siipdmpii2.product_instance_unique_number
+				from
+					pms_siipdm_product_instances_involved siipdmpii2,
+					pms_si_item_product_deposit_movement siipdm2,
+					pms_sale_invoice_product_deposit_movement sipdm2
+				where
+					siipdmpii2.id_si_item_product_deposit_movement = siipdm2.id
+					and siipdm2.id_sale_invoice_product_deposit_movement = sipdm2.id
+					and siipdm2.id_sale_invoice_item = #{id_sale_invoice_item}
+					and siipdm2.id_credit_note_item is not null
+					and sipdm2.id_sale_invoice = #{id_sale_invoice}
+					and sipdm2.id_credit_note is not null
+					and sipdm2.movement_type = 'application.common.storage.operation.income')
+		order by siipdmpii.product_instance_unique_number
+	</select>
+	
+    	
+	<!-- ################################################################################################################## -->
+	<!-- ################################################################################################################## -->
+	<!-- ################################################################################################################## -->
+	
+	
+    <select id="effectuateProductReturnSIItemPDMProductInstanceInvolvedDTO" parameterType="SIItemPDMProductInstanceInvolvedDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_effectuate_return_product_deposit_movement(
+        			#{product_deposit_movement_identifier_number},
+        			#{id_sale_invoice},
+        			#{id_sale_invoice_item},
+        			#{id_credit_note},
+        			#{id_credit_note_item},
+        			#{return_quantity},
+        			#{product_instance_unique_number},
+        			#{creation_user})
+    </select>
+    
+    <select id="listProductInstancesReturnedByCreditNoteItemDTO" parameterType="CreditNoteItemDTO" resultType="SIItemPDMProductInstanceInvolvedDTO" databaseId="postgre">
+				
+				select
+					siipdmpii2.product_instance_unique_number
+				from
+					pms_siipdm_product_instances_involved siipdmpii2,
+					pms_si_item_product_deposit_movement siipdm2,
+					pms_sale_invoice_product_deposit_movement sipdm2
+				where
+					siipdmpii2.id_si_item_product_deposit_movement = siipdm2.id
+					and siipdm2.id_sale_invoice_product_deposit_movement = sipdm2.id
+					and siipdm2.id_sale_invoice_item = #{id_sale_invoice_item}
+					and siipdm2.id_credit_note_item = #{id}
+					and sipdm2.id_sale_invoice = #{id_sale_invoice}
+					and sipdm2.id_credit_note = #{id_credit_note}
+					and sipdm2.movement_type = 'application.common.storage.operation.income'
+				order by siipdmpii2.product_instance_unique_number
+	</select>
+</mapper>

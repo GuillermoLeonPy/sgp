@@ -1,0 +1,265 @@
+<?xml version="1.0"?>
+<project 	xmlns:antcontrib="antlib:net.sf.antcontrib" 
+			xmlns:ivy="antlib:org.apache.ivy.ant"
+			xmlns:cs="antlib:com.puppycrawl.tools.checkstyle"
+			name="sgp" default="deploy">
+
+	<property file="build.properties" />
+
+	<!-- main configuration -->
+	<property environment="env" />
+	<tstamp>
+		<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
+	</tstamp>
+	<!-- end main configuration -->
+
+	<property name="jboss.home" value="${env.WILDFLY_HOME_902}" />
+	<property name="jboss.deploy.dir" value="${jboss.home}/standalone/deployments" /> 
+	<!-- end jboss properties -->
+	
+    <path id="external.jars">
+    	<fileset dir="/home/testuser/docs/apps/eclipse_proyects_libs/dashboard-libs/maven_dependencies" includes="**/*.jar" excludes="vaadin-charts-2.0.0.jar,icu4j-50.1.1.jar"/>
+    	<fileset dir="/home/testuser/docs/apps/eclipse_proyects_libs/logging-libs" includes="**/*.jar"/>
+    	<fileset dir="/home/testuser/docs/apps/eclipse_proyects_libs/bean-validation-libs/hibernate-validator-5.2.4.Final" includes="**/*.jar"/>
+    	<fileset dir="/home/testuser/docs/apps/eclipse_proyects_libs/bean-validation-libs/validation-api-1.1.0.Final" includes="**/*.jar"/>
+    	<fileset dir="/home/testuser/docs/apps/eclipse_proyects_libs/spring/4.3.2/spring-beans-4.3.2.RELEASE" includes="**/*.jar"/>
+    	<fileset dir="/home/testuser/docs/apps/eclipse_proyects_libs/spring/4.3.2/spring-context-4.3.2.RELEASE" includes="**/*.jar"/>
+    	<fileset dir="/home/testuser/docs/apps/eclipse_proyects_libs/spring/4.3.2/spring-core-4.3.2.RELEASE" includes="**/*.jar"/>
+    	<fileset dir="/home/testuser/docs/apps/eclipse_proyects_libs/spring/4.3.2/spring-web-4.3.2.RELEASE" includes="**/*.jar"/>
+    	<fileset dir="/home/testuser/docs/apps/eclipse_proyects_libs/spring/4.3.2/spring-aop-4.3.2.RELEASE" includes="**/*.jar"/>
+    	<fileset dir="/home/testuser/docs/apps/eclipse_proyects_libs/spring/4.3.2/spring-tx-4.3.2.RELEASE" includes="**/*.jar"/>
+    	<fileset dir="/home/testuser/docs/apps/eclipse_proyects_libs/myBatis/mybatis-3.4.1" includes="**/*.jar"/>
+    	<fileset dir="/home/testuser/docs/apps/eclipse_proyects_libs/spring/4.3.2/spring-jdbc-4.3.2.RELEASE" includes="**/*.jar"/>
+    	<fileset dir="/home/testuser/docs/apps/eclipse_proyects_libs/jasperreports-6.3.1" includes="**/*.jar"/>
+    	<fileset dir="/home/testuser/docs/apps/eclipse_proyects_libs/icu4j-58.1" includes="**/*.jar"/>
+    	<!--<fileset dir="/home/testuser/docs/apps/eclipse_proyects_libs/spring/4.3.2/spring-webmvc-4.3.2.RELEASE" includes="**/*.jar"/>-->
+    </path>
+	<pathconvert 
+	    refid="external.jars" 
+	    property="external.jars.list"
+	    pathsep=","
+	    dirsep="/">
+	    <map from="/" to=""/> 
+	</pathconvert>
+	<fileset id="external.jars.fileset" dir="/" includes="${external.jars.list}"/>
+	
+	<property name="deploy.libs" location="/home/testuser/docs/apps/eclipse_proyects_libs/dashboard-libs/deploy_libs"/>
+	<property name="deploy.libs.logging" location="/home/testuser/docs/apps/eclipse_proyects_libs/logging-libs"/>
+	<property name="deploy.libs.bean.validation" location="/home/testuser/docs/apps/eclipse_proyects_libs/bean-validation-libs/hibernate-validator-5.2.4.Final"/>
+	<property name="deploy.libs.bean.validation.dependencies" location="/home/testuser/docs/apps/eclipse_proyects_libs/bean-validation-libs/hibernate-validator-5.2.4.Final-deploy-dependencies"/>
+    <property name="deploy.libs.spring.beans" location="/home/testuser/docs/apps/eclipse_proyects_libs/spring/4.3.2/spring-beans-4.3.2.RELEASE"/>
+	<property name="deploy.libs.spring.context" location="/home/testuser/docs/apps/eclipse_proyects_libs/spring/4.3.2/spring-context-4.3.2.RELEASE"/>
+	<property name="deploy.libs.spring.core" location="/home/testuser/docs/apps/eclipse_proyects_libs/spring/4.3.2/spring-core-4.3.2.RELEASE"/>
+	<property name="deploy.libs.spring.web" location="/home/testuser/docs/apps/eclipse_proyects_libs/spring/4.3.2/spring-web-4.3.2.RELEASE"/>
+	<property name="deploy.libs.spring.expression" location="/home/testuser/docs/apps/eclipse_proyects_libs/spring/4.3.2/spring-expression-4.3.2.RELEASE"/>
+	<property name="deploy.libs.spring.aop" location="/home/testuser/docs/apps/eclipse_proyects_libs/spring/4.3.2/spring-aop-4.3.2.RELEASE"/>
+	<property name="deploy.libs.spring.tx" location="/home/testuser/docs/apps/eclipse_proyects_libs/spring/4.3.2/spring-tx-4.3.2.RELEASE"/>
+	<property name="deploy.libs.spring.jdbc" location="/home/testuser/docs/apps/eclipse_proyects_libs/spring/4.3.2/spring-jdbc-4.3.2.RELEASE"/>
+	<property name="deploy.libs.mybatis" location="/home/testuser/docs/apps/eclipse_proyects_libs/myBatis/mybatis-3.4.1"/>
+	<property name="deploy.libs.commons.javaflow" location="/home/testuser/docs/apps/eclipse_proyects_libs/commons-javaflow"/>
+	<property name="deploy.libs.itext" location="/home/testuser/docs/apps/eclipse_proyects_libs/iText-2.1.7"/>
+	<property name="deploy.libs.jasper.reports" location="/home/testuser/docs/apps/eclipse_proyects_libs/jasperreports-6.3.1"/>
+	<property name="deploy.libs.joda.time" location="/home/testuser/docs/apps/eclipse_proyects_libs/joda-time-2.9.6"/>
+	<property name="deploy.libs.commons.digester" location="/home/testuser/docs/apps/eclipse_proyects_libs/commons-digester-1.8"/>
+	<property name="deploy.libs.jfreechart" location="/home/testuser/docs/apps/eclipse_proyects_libs/jfreechart-1.0.19"/>
+	<property name="deploy.libs.icu4j.58.1" location="/home/testuser/docs/apps/eclipse_proyects_libs/icu4j-58.1"/>
+	<!--<property name="deploy.libs.spring.web.mvc" location="/home/testuser/docs/apps/eclipse_proyects_libs/spring/4.3.2/spring-webmvc-4.3.2.RELEASE"/>-->
+	
+	<!-- application properties -->
+	<property name="appname" value="${artifact.name}" />
+	<property name="bin" value="antbuild" />
+	<property name="src" value="src" />
+	<property name="dist" value="dist" />
+	<property name="lib" value="lib" />
+	<property name="resource" value="resources" />
+	<!-- end application properties -->
+
+	<!-- application locations -->
+	<property name="appdir" location=".." />
+	<property name="srcdir" location="${appdir}/${src}" />
+	<property name="bindir" location="${appdir}/${bin}" />
+	<property name="distdir" location="${appdir}/${dist}" />
+	<property name="distdir.lib" location="${distdir}/${lib}" />
+	<property name="widgetsets-output-dir" value="${distdir}/widgetsets" />
+	<property name="resourcedir" location="${appdir}/${resource}" />
+	<property name="webinf.dir" location="${appdir}/WebContent/WEB-INF"/>
+	<property name="vaadin.dir" location="${appdir}/WebContent/VAADIN"/>
+	<property name="webcontent.dir" location="${appdir}/WebContent"/>
+
+	<!-- artifact configuration -->
+	<property name="version" value="${implementation.version}" />
+	<property name="artifact.extension" value="war" />
+	<property name="src.extension" value="zip" />
+	<property name="src.suffix" value="-src" />
+	<property name="doc.extension" value="zip" />
+	<property name="doc.suffix" value="-doc" />
+	<property name="artifactdest" value="${appname}-${version}.${artifact.extension}" />
+	<property name="srcdest" value="${appname}${src.suffix}-${version}.${src.extension}" />
+	<property name="docdest" value="${appname}${doc.suffix}-${version}.${doc.extension}" />
+	<property name="widgetset.name" value="py.com.kyron.sgp.gui.DashboardWidgetSet"/>	
+	<property name="data.destination" value="py/com/kyron/sgp/gui/data/dummy"/>
+
+	<property name="theme.name" value="${theme.name}" />
+	<property name="theme.dir" value="${appdir}/VAADIN/themes" />
+
+	<!-- application builder -->
+	<target name="compile" depends="clean"  >
+		<mkdir dir="${bindir}"/>
+		<mkdir dir="${distdir}"/>
+		<mkdir dir="${distdir.lib}"/>
+		<mkdir dir="${widgetsets-output-dir}"/>
+		<mkdir dir="${widgetsets-output-dir}/extras"/>
+
+		<javac 
+			srcdir="${srcdir}" 
+			destdir="${bindir}" 
+			includeantruntime="false" 
+			failonerror="true" 
+			debug="true" 
+			debuglevel="lines,vars,source" 
+			classpathref="external.jars"><!-- jar externo para compilar -->
+			<classpath>
+				<fileset refid="external.jars.fileset" />
+			</classpath>
+			<compilerarg line="-Xlint:deprecation" />
+			<compilerarg value="-processorpath" />
+			<compilerarg value="/home/testuser/docs/apps/eclipse_proyects_libs/bean-validation-libs/hibernate-validator-annotation-processor-5.2.4.Final"/>
+		</javac>
+
+		<path id="widgetset.compile.classpath">
+			<fileset refid="external.jars.fileset" />
+			<pathelement path="${srcdir}"/>
+			<pathelement path="${bindir}"/>
+			<pathelement path="${vaadin.libs}"/>
+		</path>
+
+		<antcall target="compile-widgetset" inheritrefs="true">
+			<param name="widgetset" value="${widgetset.name}"/>
+		</antcall>
+		
+	</target>
+
+	<target name="clean">
+		<delete failonerror="false">
+			<fileset dir="${distdir}">
+				<include name="**/*.*"/>
+			</fileset>
+			<fileset dir="${bindir}">
+				<include name="**/*.*"/>
+			</fileset>
+		</delete>
+	</target>
+
+  <target name="compile-theme" depends="compile-theme-1, compile-theme-2">
+    <!-- the dependencies do all the work here -->
+  </target>
+
+  <target name="compile-theme-1" if="theme.name">
+	<delete dir="${theme.dir}/${theme.name}"/>
+    <mkdir dir="${theme.dir}/${theme.name}"/>
+    <java classname="com.vaadin.sass.SassCompiler" failonerror="yes" fork="yes">
+      <classpath refid="widgetset.compile.classpath"/>
+      <jvmarg value="-Djava.awt.headless=true"/>
+      <arg value="${vaadin.dir}/themes/${theme.name}/styles.scss"/>
+      <arg value="${theme.dir}/${theme.name}/styles.css"/>
+    </java>
+  </target>
+
+  <target name="compile-theme-2" unless="theme.name">
+    <echo message="theme.name is not set - skipping theme compilation"/>
+  </target>
+  	
+	<target name="compile-widgetset-manual">
+		<echo>Compiling widgetset ${widgetset}. Output directory: ${widgetsets-output-dir}</echo>
+		<antcall target="compile-widgetset" inheritrefs="true">
+			<param name="widgetset" value="${widgetset.name}"/>
+		</antcall>	
+	</target>
+	<path id="widgetset.compile.classpath">
+			<fileset refid="external.jars.fileset" />
+			<pathelement path="${srcdir}"/>
+			<pathelement path="${bindir}"/>
+			<pathelement path="${vaadin.libs}"/>
+	</path>
+	
+	<target name="compile-widgetset" description="Compiles the widgetset given as the first parameter">
+		<fail unless="widgetset" message="No widgetset parameter set"/>
+		<echo>Compiling widgetset ${widgetset}. Output directory: ${widgetsets-output-dir}</echo>		
+		<java classname="com.google.gwt.dev.Compiler" failonerror="yes" fork="yes" maxmemory="512m">
+			<classpath refid="widgetset.compile.classpath" />
+			<arg value="-war" />			
+			<arg value="${widgetsets-output-dir}" />
+			<arg value="-extra"/>
+			<arg value="${widgetsets-output-dir}/extras" />
+			<arg value="-style" />
+			<arg value="OBF" />
+			<arg value="-localWorkers" />
+			<arg value="4" />
+			<arg value="${widgetset}" />
+			<jvmarg value="-Xss8M" />
+			<jvmarg value="-XX:MaxPermSize=256M" />
+			<jvmarg value="-Djava.awt.headless=true" />
+		</java>
+		<echo>Compiled ${widgetset}</echo>
+	</target>
+
+
+
+	<target name="packaging" depends="compile">
+		<buildnumber file="version.properties"/>
+		<war destfile="${distdir}/${artifactdest}" webxml="${webinf.dir}/web.xml" >		
+			<zipfileset dir="${bindir}" includes="**/*.class" prefix="WEB-INF/classes" />
+			<zipfileset dir="${distdir.lib}" includes="**/*.jar" prefix="WEB-INF/lib" />
+			<!-- jar externo agregar al war -->
+			<zipfileset dir="${deploy.libs}" includes="**/*.jar" excludes="vaadin-charts-2.0.0.jar,slf4j-jdk14-1.6.4.jar,slf4j-api-1.6.4.jar" prefix="WEB-INF/lib" />
+			<zipfileset dir="${deploy.libs.logging}" includes="**/*.jar" prefix="WEB-INF/lib" />
+			<zipfileset dir="${deploy.libs.bean.validation}" includes="**/*.jar" prefix="WEB-INF/lib" /> 
+			<zipfileset dir="${deploy.libs.bean.validation.dependencies}" includes="**/*.jar" prefix="WEB-INF/lib" />
+			<zipfileset dir="${deploy.libs.spring.beans}" includes="**/*.jar" excludes="**/*javadoc.jar" prefix="WEB-INF/lib" />
+			<zipfileset dir="${deploy.libs.spring.context}" includes="**/*.jar" excludes="**/*javadoc.jar" prefix="WEB-INF/lib" />
+			<zipfileset dir="${deploy.libs.spring.core}" includes="**/*.jar" excludes="**/*javadoc.jar" prefix="WEB-INF/lib" />
+			<zipfileset dir="${deploy.libs.spring.web}" includes="**/*.jar" excludes="**/*javadoc.jar" prefix="WEB-INF/lib" />
+			<zipfileset dir="${deploy.libs.spring.expression}" includes="**/*.jar" excludes="**/*javadoc.jar" prefix="WEB-INF/lib" />
+			<zipfileset dir="${deploy.libs.spring.aop}" includes="**/*.jar" excludes="**/*javadoc.jar" prefix="WEB-INF/lib" />
+			<zipfileset dir="${deploy.libs.spring.tx}" includes="**/*.jar" excludes="**/*javadoc.jar" prefix="WEB-INF/lib" />
+			<zipfileset dir="${deploy.libs.spring.jdbc}" includes="**/*.jar" excludes="**/*javadoc.jar" prefix="WEB-INF/lib" />
+			<zipfileset dir="${deploy.libs.mybatis}" includes="**/*.jar" excludes="**/*javadoc.jar" prefix="WEB-INF/lib" />
+			<zipfileset dir="${deploy.libs.commons.javaflow}" includes="**/*.jar" excludes="**/*javadoc.jar" prefix="WEB-INF/lib" />
+			<zipfileset dir="${deploy.libs.itext}" includes="**/*.jar" excludes="**/*javadoc.jar" prefix="WEB-INF/lib" />
+			<zipfileset dir="${deploy.libs.jasper.reports}" includes="**/*.jar" excludes="**/*javadoc.jar" prefix="WEB-INF/lib" />
+			<zipfileset dir="${deploy.libs.joda.time}" includes="**/*.jar" excludes="**/*javadoc.jar" prefix="WEB-INF/lib" />
+			<zipfileset dir="${deploy.libs.commons.digester}" includes="**/*.jar" excludes="**/*javadoc.jar" prefix="WEB-INF/lib" />
+			<zipfileset dir="${deploy.libs.jfreechart}" includes="**/*.jar" excludes="**/*javadoc.jar" prefix="WEB-INF/lib" />
+			<zipfileset dir="${deploy.libs.icu4j.58.1}" includes="**/*.jar" excludes="**/*docs.jar" prefix="WEB-INF/lib" />
+			<!-- <zipfileset dir="${deploy.libs.spring.web.mvc}" includes="**/*.jar" excludes="**/*javadoc.jar" prefix="WEB-INF/lib" /> -->
+			<zipfileset dir="${srcdir}" includes="**/*.xml" prefix="WEB-INF/classes" />
+			<!-- <zipfileset dir="${resourcedir}" includes="**/*.*" prefix="WEB-INF/classes/resources" /> -->
+			<zipfileset dir="${resourcedir}/data" includes="**/*.*" prefix="WEB-INF/classes/${data.destination}" />
+			<zipfileset dir="${resourcedir}/data" includes="**/*.*" prefix="" />
+			<zipfileset dir="${resourcedir}/validation" includes="**/*.properties" prefix="WEB-INF/classes" />
+			<zipfileset dir="${resourcedir}/messages" includes="**/*.properties" prefix="WEB-INF/classes" />
+			<zipfileset dir="${resourcedir}/reports" includes="**/*.jasper" prefix="reports" />
+			<zipfileset dir="${resourcedir}/validation" includes="validation.xml" prefix="WEB-INF/classes/META-INF" />
+			<!--<zipfileset dir="${resourcedir}/validation" includes="constraints-moneda.xml" prefix="WEB-INF/classes/META-INF/validation" />-->
+			<zipfileset dir="${resourcedir}" includes="logback.xml" prefix="WEB-INF/classes" />
+			<zipfileset dir="${webinf.dir}" includes="jboss-web.xml,jboss-deployment-structure.xml,sgp-servlet.xml" prefix="WEB-INF" /><!-- ,applicationContext.xml -->
+			<zipfileset dir="." includes="version.properties, build.properties" prefix="WEB-INF/classes" />
+			<zipfileset dir="${vaadin.dir}/themes" includes="**/*.*" prefix="VAADIN/themes" />
+			<!-- VAADIN STUPID COMPILATION WORKAROUND -->
+			<zipfileset dir="${widgetsets-output-dir}/${widgetset.name}" includes="**/*.*" prefix="VAADIN/widgetsets/${widgetset.name}" />
+
+		</war>
+
+		<zip destfile="${distdir}/${srcdest}">
+			<zipfileset dir="${srcdir}" includes="**/*.*" />
+		</zip>
+	</target>
+
+	<!-- deploy -->
+	<target name="deploy" depends="packaging" >
+		<delete file="${jboss.deploy.dir}\${artifactdest}" failonerror="true"/>
+		<copy file="${distdir}/${artifactdest}" todir="${jboss.deploy.dir}"/>
+	</target>
+
+
+</project>

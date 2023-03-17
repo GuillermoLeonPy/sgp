@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="SGP_GUI_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${jboss.server.log.dir}/sgp-gui.log</file>  
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>%date %level [%file:%line] %msg%n</Pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+		<FileNamePattern>${jboss.server.log.dir}/sgp-gui.%i.log.zip</FileNamePattern> 
+			<MinIndex>1</MinIndex>
+			<MaxIndex>5</MaxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>30MB</MaxFileSize>
+		</triggeringPolicy>
+	</appender>
+	<appender name="SGP_BUSSINES_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${jboss.server.log.dir}/sgp-bussiness.log</file>  
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>%date %level [%file:%line] %msg%n</Pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+		<FileNamePattern>${jboss.server.log.dir}/sgp-bussiness.%i.log.zip</FileNamePattern> 
+			<MinIndex>1</MinIndex>
+			<MaxIndex>5</MaxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>30MB</MaxFileSize>
+		</triggeringPolicy>
+	</appender>
+	<appender name="SGP_SQL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${jboss.server.log.dir}/sgp-sql.log</file>  
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>%date %level [%file:%line] %msg%n</Pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+		<FileNamePattern>${jboss.server.log.dir}/sgp-sql.%i.log.zip</FileNamePattern> 
+			<MinIndex>1</MinIndex>
+			<MaxIndex>5</MaxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>30MB</MaxFileSize>
+		</triggeringPolicy>
+	</appender>	
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%date %level %msg%n</pattern>
+		</encoder>
+	</appender>
+	<logger name="py.com.kyron.sgp.gui" level="INFO" additivity="false">
+		<appender-ref ref="SGP_GUI_FILE" />	
+	</logger>
+	<logger name="py.com.kyron.sgp.bussines" level="INFO" additivity="false">
+		<appender-ref ref="SGP_BUSSINES_FILE" />	
+	</logger>
+	<logger name="org.springframework" level="INFO" additivity="false">
+		<appender-ref ref="SGP_BUSSINES_FILE" />
+	</logger>
+	<logger name="py.com.kyron.sgp.persistence" level="DEBUG" additivity="false">
+		<appender-ref ref="SGP_SQL_FILE" />	
+	</logger>
+	<logger name="java.sql" level="DEBUG" additivity="false">
+		<appender-ref ref="SGP_SQL_FILE" />	
+	</logger>
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>

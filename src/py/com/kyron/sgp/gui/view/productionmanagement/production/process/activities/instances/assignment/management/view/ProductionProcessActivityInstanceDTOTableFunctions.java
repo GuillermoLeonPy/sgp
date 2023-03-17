@@ -1,0 +1,18 @@
+package py.com.kyron.sgp.gui.view.productionmanagement.production.process.activities.instances.assignment.management.view;
+
+import java.util.List;
+
+import py.com.kyron.sgp.bussines.exception.PmsServiceException;
+import py.com.kyron.sgp.bussines.productionmanagement.domain.ProductionProcessActivityInstanceDTO;
+
+public interface ProductionProcessActivityInstanceDTOTableFunctions {
+
+	
+	public void assignProductionProcessActivityInstanceDTO(final ProductionProcessActivityInstanceDTO productionProcessActivityInstanceDTO);
+	public void doParcialProductRecall(final ProductionProcessActivityInstanceDTO productionProcessActivityInstanceDTO);
+	public void effectuateRawMaterialSupply(final ProductionProcessActivityInstanceDTO productionProcessActivityInstanceDTO);
+	public void finalizeProductionProcessActivityInstanceDTO(final ProductionProcessActivityInstanceDTO productionProcessActivityInstanceDTO);
+	public void deliverPartialResult(final ProductionProcessActivityInstanceDTO productionProcessActivityInstanceDTO);
+	public void deliverFinalProduct(final ProductionProcessActivityInstanceDTO productionProcessActivityInstanceDTO);
+	public void queryOrderNumber(final ProductionProcessActivityInstanceDTO productionProcessActivityInstanceDTO)throws PmsServiceException;
+}

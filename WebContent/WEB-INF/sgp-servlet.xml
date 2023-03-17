@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee" 
+	xmlns:lang="http://www.springframework.org/schema/lang"
+	xmlns:p="http://www.springframework.org/schema/p" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+		http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<bean id="sgpApplicationContextAware" class="py.com.kyron.sgp.gui.config.spring.SgpApplicationContextAware" />
+	
+	<bean id="applicationUtils" class="py.com.kyron.sgp.bussines.application.utils.impl.ApplicationUtilsImpl" init-method="init" destroy-method="cleanUp"/>
+	
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>messages</value>
+				<!-- <value>exceptions</value>
+				<value>windows</value>  -->
+			</list>
+		</property>
+	</bean>
+	
+ 
+	<bean id="vendorProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+	    <property name="properties">
+	        <props>
+	            <prop key="Oracle">oracle</prop>
+	            <prop key="Postgre">postgre</prop>
+	        </props>
+	    </property>
+	</bean>
+	 
+	<bean id="databaseIdProvider" class="org.apache.ibatis.mapping.VendorDatabaseIdProvider">
+	    <property name="properties" ref="vendorProperties"/>
+	</bean>
+
+	<jee:jndi-lookup id="dataSource" jndi-name="java:jboss/datasources/sgpDS"/>
+	
+	<!-- sqlSessionFactory Y transactionManager DEBEN TENER LA REFERENCIA AL MISMO DATASOURCE para que la administracion de transacciones funcione -->
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	  	<property name="dataSource" ref="dataSource" />
+	  	<property name="configLocation" value="classpath:py/com/kyron/sgp/persistence/dao/config/config.xml" />
+	  	<property name="databaseIdProvider" ref="databaseIdProvider"/> 
+	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	  	<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- <tx:annotation-driven transaction-manager="transactionManager" mode="aspectj"/>  
+	
+	spring-framework-reference.pdf, pag:382. 
+	Pag 381: Consider the use of AspectJ mode (see mode attribute in table below) if you expect self-invocations to
+	be wrapped with transactions as well.
+	
+	Pag:383
+	<tx:annotation-driven/> only looks for
+	@Transactional on beans in the same application context they are defined in. This
+	means that, if you put annotation driven configuration in a WebApplicationContext for a
+	DispatcherServlet, it only checks for @Transactional beans in your controllers, and not
+	your services. See Section 22.2, “The DispatcherServlet” for more information.
+	 -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	
+	<bean id="currencyDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.comercialmanagement.dao.CurrencyDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="productDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.comercialmanagement.dao.ProductDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="personDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.personmanagement.dao.PersonDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="applicationSecurityDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.applicationsecurity.dao.ApplicationSecurityDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="machineDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.productionmanagement.dao.MachineDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="rawMaterialDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.productionmanagement.dao.RawMaterialDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="measurmentUnitDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.productionmanagement.dao.MeasurmentUnitDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="tariffDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.productionmanagement.dao.TariffDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="manPowerCostDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.productionmanagement.dao.ManPowerCostDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="rawMaterialExistenceDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.stockmanagement.dao.RawMaterialExistenceDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="rawMaterialPurchaseRequestDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.stockmanagement.dao.RawMaterialPurchaseRequestDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>	
+	
+	<bean id="productionProcessDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.productionmanagement.dao.ProductionProcessDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="productionProcessActivityDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.productionmanagement.dao.ProductionProcessActivityDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="rawMaterialRequirementDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.productionmanagement.dao.RawMaterialRequirementDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="manPowerRequirementDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.productionmanagement.dao.ManPowerRequirementDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="machineRequirementDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.productionmanagement.dao.MachineRequirementDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="orderDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.comercialmanagement.dao.OrderDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="orderItemDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.comercialmanagement.dao.OrderItemDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="saleInvoiceDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.cash.movements.management.dao.SaleInvoiceDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="saleInvoicePaymentDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.cash.movements.management.dao.SaleInvoicePaymentDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="creditNoteDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.cash.movements.management.dao.CreditNoteDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="purchaseInvoiceDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.cash.movements.management.dao.PurchaseInvoiceDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="productDepositMovementDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.stockmanagement.dao.ProductDepositMovementDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="cashMovementsReportDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	  	<property name="mapperInterface" value="py.com.kyron.sgp.persistence.cash.movements.management.dao.CashMovementsReportDAO" />
+	  	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+												
+	<bean id="bussinesSessionUtils" class="py.com.kyron.sgp.bussines.session.utils.impl.BussinesSessionUtilsImpl" scope="session">
+		<aop:scoped-proxy/>
+		<property name="applicationUtils" ref="applicationUtils"/>
+	</bean>
+		
+	<bean id="comercialManagementService" class="py.com.kyron.sgp.bussines.comercialmanagement.service.impl.ComercialManagementServiceImpl" init-method="init">
+		<property name="bussinesSessionUtils" ref="bussinesSessionUtils"/>
+		<property name="currencyDAO" ref="currencyDAO"/>
+		<property name="productDAO" ref="productDAO"/>
+		<property name="orderDAO" ref="orderDAO"/>
+		<property name="orderItemDAO" ref="orderItemDAO"/>		
+		<property name="personDAO" ref="personDAO"/>
+	</bean>
+	
+	<bean id="personManagementService" class="py.com.kyron.sgp.bussines.personmanagement.service.impl.PersonManagementServiceImpl" init-method="init">
+		<property name="bussinesSessionUtils" ref="bussinesSessionUtils"/>
+		<property name="personDAO" ref="personDAO"/>
+		<property name="applicationSecurityDAO" ref="applicationSecurityDAO"/>		
+	</bean>
+
+	<bean id="applicationSecurityService" class="py.com.kyron.sgp.bussines.applicationsecurity.service.impl.ApplicationSecurityServiceImpl" init-method="init">
+		<property name="bussinesSessionUtils" ref="bussinesSessionUtils"/>
+		<property name="applicationSecurityDAO" ref="applicationSecurityDAO"/>
+	</bean>
+	
+	<bean id="productionManagementService" class="py.com.kyron.sgp.bussines.productionmanagement.service.impl.ProductionManagementServiceImpl" init-method="init">
+		<property name="bussinesSessionUtils" ref="bussinesSessionUtils"/>
+		<property name="machineDAO" ref="machineDAO"/>
+		<property name="rawMaterialDAO" ref="rawMaterialDAO"/>
+		<property name="measurmentUnitDAO" ref="measurmentUnitDAO"/>
+		<property name="tariffDAO" ref="tariffDAO"/>
+		<property name="manPowerCostDAO" ref="manPowerCostDAO"/>
+		<property name="productionProcessDAO" ref="productionProcessDAO"/>
+		<property name="productionProcessActivityDAO" ref="productionProcessActivityDAO"/>
+		<property name="rawMaterialRequirementDAO" ref="rawMaterialRequirementDAO"/>
+		<property name="manPowerRequirementDAO" ref="manPowerRequirementDAO"/>
+		<property name="machineRequirementDAO" ref="machineRequirementDAO"/>		
+		<property name="personManagementService" ref="personManagementService"/>
+		<property name="stockManagementService" ref="stockManagementService"/>
+	</bean>
+	
+	<bean id="stockManagementService" class="py.com.kyron.sgp.bussines.stockmanagement.service.impl.StockManagementServiceImpl" init-method="init">
+		<property name="bussinesSessionUtils" ref="bussinesSessionUtils"/>
+		<property name="rawMaterialExistenceDAO" ref="rawMaterialExistenceDAO"/>
+		<property name="rawMaterialPurchaseRequestDAO" ref="rawMaterialPurchaseRequestDAO"/>
+		<property name="personDAO" ref="personDAO"/>
+		<property name="measurmentUnitDAO" ref="measurmentUnitDAO"/>
+		<property name="rawMaterialDAO" ref="rawMaterialDAO"/>
+		<property name="productDepositMovementDAO" ref="productDepositMovementDAO"/>
+		<property name="comercialManagementService" ref="comercialManagementService"/>
+	</bean>
+	
+	<bean id="cashMovementsManagementService" class="py.com.kyron.sgp.bussines.cash.movements.management.service.impl.CashMovementsManagementServiceImpl" init-method="init">
+		<property name="bussinesSessionUtils" ref="bussinesSessionUtils"/>
+		<property name="saleInvoiceDAO" ref="saleInvoiceDAO"/>
+		<property name="comercialManagementService" ref="comercialManagementService"/>
+		<property name="saleInvoicePaymentDAO" ref="saleInvoicePaymentDAO"/>
+		<property name="creditNoteDAO" ref="creditNoteDAO"/>
+		<property name="purchaseInvoiceDAO" ref="purchaseInvoiceDAO"/>
+		<property name="personManagementService" ref="personManagementService"/>
+		<property name="productionManagementService" ref="productionManagementService"/>
+		<property name="productDepositMovementDAO" ref="productDepositMovementDAO"/>
+		<property name="cashMovementsReportDAO" ref="cashMovementsReportDAO"/>
+	</bean>		
+</beans>

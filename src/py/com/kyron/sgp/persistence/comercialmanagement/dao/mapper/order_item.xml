@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="py.com.kyron.sgp.persistence.comercialmanagement.dao.OrderItemDAO">
+	
+	<resultMap type="OrderItemDTO" id="OrderItemDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="id_order" 	  	  	 property="id_order"			javaType="long"/>
+		<result column="id_product" 	  	  	 property="id_product"			javaType="long"/>
+		<result column="status" 	  	  	 property="status"			javaType="string"/>
+		<result column="previous_status" 	  	  	 property="previous_status"			javaType="string"/>
+		<result column="quantity" 	  	  	 property="quantity"			javaType="long"/>
+		<result column="unit_price_amount" 	  	  	 property="unit_price_amount"			javaType="java.math.BigDecimal"/>
+		<result column="product_unit_manufacture_cost" 	  	  	 property="product_unit_manufacture_cost"			javaType="java.math.BigDecimal"/>
+		<result column="exempt_unit_price_amount" 	  	  	 property="exempt_unit_price_amount"			javaType="java.math.BigDecimal"/>
+		<result column="value_added_tax_10_unit_price_amount" 	  	  	 property="value_added_tax_10_unit_price_amount"			javaType="java.math.BigDecimal"/>
+		<result column="value_added_tax_5_unit_price_amount" 	  	  	 property="value_added_tax_5_unit_price_amount"			javaType="java.math.BigDecimal"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+	</resultMap>
+	
+	<sql id="selectOrderItem">
+			select 
+					order_item.id,
+					order_item.id_order,
+					order_item.id_product,
+					order_item.status,
+					order_item.previous_status,
+					order_item.quantity,
+					order_item.unit_price_amount,
+					order_item.product_unit_manufacture_cost,
+					order_item.exempt_unit_price_amount,
+					order_item.value_added_tax_10_unit_price_amount,
+					order_item.value_added_tax_5_unit_price_amount,
+					order_item.creation_user,
+					order_item.creation_date,
+					order_item.last_modif_user,
+					order_item.last_modif_date
+			from
+				pms_order_item order_item
+	</sql>
+	
+    <select id="pmsOrderItemDTOIdBySequence" parameterType="long" resultType="java.lang.Long" databaseId="postgre">
+			<!-- select nextval('pms_order_item_id_sq')  -->
+			select f_pms_order_item_id_sq(#{id})
+    </select>	
+	
+    <select id="insertOrderItemDTO" parameterType="OrderItemDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_order_item(#{id},
+									#{id_order},
+									#{id_product},
+									#{quantity},
+									#{unit_price_amount},
+									#{product_unit_manufacture_cost},
+									#{exempt_unit_price_amount},
+									#{value_added_tax_10_unit_price_amount},
+									#{value_added_tax_5_unit_price_amount},
+									#{creation_user}
+									)
+    </select>
+
+    <select id="updateOrderItemDTO" parameterType="OrderItemDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_u_pms_order_item(#{id},
+									#{status},
+									#{last_modif_user}
+									)
+    </select>
+    
+    <select id="determinateProductPriceByProductIdCurrencyId" parameterType="OrderItemDTO" resultType="java.math.BigDecimal" databaseId="postgre">
+			select f_determinate_product_price(
+									#{id_product},
+									#{order_id_currency});
+    </select>
+
+    <select id="determinateProductPriceByProductIdCurrencyIdIdentifyingOrder" parameterType="OrderItemDTO" resultType="java.math.BigDecimal" databaseId="postgre">
+			select f_determinate_product_price_identifiying_order(
+									#{order_identifier_number},
+									#{id_product},
+									#{order_id_currency},
+									#{creation_user});
+    </select>
+    
+    <select id="listOrderItemDTO" parameterType="OrderItemDTO" resultMap="OrderItemDTOMap" databaseId="postgre">
+        <include refid="selectOrderItem"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and order_item.id = #{id}
+				</if>
+				<if test="id_order != null">
+					and order_item.id_order = #{id_order}
+				</if>
+		</trim>
+				order by order_item.id
+    </select>
+	
+    <delete id="deleteDiscardedOrderItemDTObyOrderDTO" parameterType="OrderDTO" databaseId="postgre">
+       DELETE FROM pms_order_item
+       WHERE id_order = #{id}
+       <if test="listOrderItemDTO != null">
+                 AND id not IN 
+                 <foreach item="item" index="index" collection="listOrderItemDTO" open="(" separator="," close=")">
+					<if test="item.id != null">
+						#{item.id}
+					</if>
+        		</foreach>
+       </if>
+    </delete>
+</mapper>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="py.com.kyron.sgp.persistence.personmanagement.dao.PersonDAO">
+	
+	<resultMap type="PersonDTO" id="PersonDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="ruc" 	  	  	 property="ruc"			javaType="string"/>
+		<result column="personal_telephone_number" 	  	  	 property="personal_telephone_number"	javaType="string"/>
+		<result column="personal_name"		 	 property="personal_name"			javaType="string"/>
+		<result column="personal_last_name" 	  	  	 property="personal_last_name"			javaType="string"/>
+		<result column="personal_email_address"    	 property="personal_email_address"			javaType="string"/>
+		<result column="personal_civil_id_document" 	  	  	 property="personal_civil_id_document"			javaType="long"/>
+		<result column="personal_address"    	 property="personal_address"			javaType="string"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+		<result column="is_supplier"		 	 property="is_supplier"			javaType="java.lang.Boolean" typeHandler="py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler"/>
+		<result column="is_customer"		 	 property="is_customer"			javaType="java.lang.Boolean" typeHandler="py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler"/>
+		<result column="is_functionary"		 	 property="is_functionary"			javaType="java.lang.Boolean" typeHandler="py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="commercial_name" 	  	  	 property="commercial_name"			javaType="string"/>
+		<result column="app_user_name" 	  	  	 property="application_user_name"			javaType="string"/>
+		<result column="app_user_passwd" 	  	  	 property="application_password"			javaType="string"/>		
+	</resultMap>
+		
+	<sql id="selectPerson">
+			select 
+					person.ruc,
+					person.personal_telephone_number,
+					person.personal_name,
+					person.personal_last_name,
+					person.personal_email_address,
+					person.personal_civil_id_document,
+					person.personal_address,
+					person.last_modif_user,
+					person.last_modif_date,
+					person.is_supplier,
+					person.is_customer,
+					person.is_functionary,
+					person.id,
+					person.creation_user,
+					person.creation_date,
+					person.commercial_name,
+					person.app_user_name,
+					person.app_user_passwd
+					
+			from
+				pms_person person
+	</sql>
+	
+    <select id="pmsPersonIdBySequence" resultType="java.lang.Long" databaseId="postgre">
+			select nextval('pms_person_id_sq')
+    </select>	
+	
+    <select id="insert" parameterType="PersonDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        			
+        		p_i_pms_person(
+							#{id},
+							#{ruc},
+							#{personal_name},
+							#{personal_last_name},
+							#{personal_address},
+							#{personal_email_address},
+							#{personal_telephone_number},
+							#{personal_civil_id_document},
+							#{commercial_name},
+							#{is_functionary,jdbcType=VARCHAR,typeHandler=py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler},
+							#{is_customer,jdbcType=VARCHAR,typeHandler=py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler},
+							#{is_supplier,jdbcType=VARCHAR,typeHandler=py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler},
+							#{creation_user},
+							#{application_user_name},
+							#{application_password})
+    </select>
+    
+    <select id="update" parameterType="PersonDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_u_pms_person(
+							#{id},
+							#{ruc},
+							#{personal_name},
+							#{personal_last_name},
+							#{personal_address},
+							#{personal_email_address},
+							#{personal_telephone_number},
+							#{personal_civil_id_document},
+							#{commercial_name},
+							#{is_functionary,jdbcType=VARCHAR,typeHandler=py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler},
+							#{is_customer,jdbcType=VARCHAR,typeHandler=py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler},
+							#{is_supplier,jdbcType=VARCHAR,typeHandler=py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler},
+							#{creation_user})
+    </select>
+     
+    <select id="listPersonDTO" parameterType="PersonDTO" resultMap="PersonDTOMap">
+        <include refid="selectPerson"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+				<if test="id != null">
+					and person.id = #{id}
+				</if>
+				<if test="personal_name != null">
+					and person.personal_name like '%'||upper(trim(#{personal_name}))||'%'
+				</if>
+				<if test="personal_last_name != null">
+					and person.personal_last_name like '%'||upper(trim(#{personal_last_name}))||'%'
+				</if>
+				<if test="application_user_name != null">
+					and person.app_user_name = trim(#{application_user_name})
+				</if>
+				<if test="application_password != null">
+					and person.app_user_passwd = trim(#{application_password})
+				</if>
+				<if test="personal_civil_id_document != null">
+					and person.personal_civil_id_document = #{personal_civil_id_document}
+				</if>
+				<if test="ruc != null">
+					and person.ruc = #{ruc}
+				</if>
+				<if test="commercial_name != null">
+					and person.commercial_name like '%'||upper(trim(#{commercial_name}))||'%'
+				</if>
+				<if test="is_functionary != null">
+					and person.is_functionary = #{is_functionary,jdbcType=VARCHAR,typeHandler=py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler}
+				</if>
+				<if test="is_customer != null">
+					and person.is_customer = #{is_customer,jdbcType=VARCHAR,typeHandler=py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler}
+				</if>
+				<if test="is_supplier != null">
+					and person.is_supplier = #{is_supplier,jdbcType=VARCHAR,typeHandler=py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler}
+				</if>
+		</trim>
+				order by person.personal_last_name asc, person.commercial_name asc
+    </select>
+	
+	<!--
+    <select id="delete" parameterType="PersonDTO">
+        SELECT   a.id       AS id,
+                 a.name     AS name
+        FROM     accounts a
+    </select>
+    
+    <select id="selectBy" parameterType="PersonDTO" resultType="PersonDTO">
+        SELECT   a.id       AS id,
+                 a.name     AS name
+        FROM     accounts a
+    </select>
+     -->    
+</mapper>

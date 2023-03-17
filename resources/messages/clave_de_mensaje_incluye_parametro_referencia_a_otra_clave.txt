@@ -1,0 +1,4 @@
+
+¿como parametrizar una clave de mensaje que haga referencia a otra clave de mensaje?
+
+py.com.kyron.sgp.persistence.cash.movements.management.dao.sale.invoice.dao.re.generate.sale.invoice.by.order.order.status.or.previous.status.not.in.allowed.values=Requerido estado {application.common.status.confirmed} o {application.common.status.invoiced} o {application.common.status.in.progress}; y estado previo {application.common.status.revision} para regenerar factura por pedido. Estado actual {}; estado previo actual : {}

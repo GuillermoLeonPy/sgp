@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="py.com.kyron.sgp.persistence.productionmanagement.dao.MachineRequirementDAO">
+	
+	<resultMap type="MachineRequirementDTO" id="MachineRequirementDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="id_production_process_activity" 	  	  	 property="id_production_process_activity"			javaType="long"/>
+		<result column="id_machine" 	  	  	 property="id_machine"			javaType="long"/>
+		<result column="minutes_quantity" 	  	  	 property="minutes_quantity"			javaType="long"/>
+		<result column="registration_date" 	  	  	 property="registration_date"	javaType="java.util.Date"/>
+		<result column="validity_end_date" 	  	  	 property="validity_end_date"	javaType="java.util.Date"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+	</resultMap>
+	
+	<sql id="selectMachineRequirementDTO">
+			select 
+				mr.id,
+				mr.id_production_process_activity,
+				mr.id_machine,
+				mr.minutes_quantity,
+				mr.registration_date,
+				mr.validity_end_date,
+				mr.creation_user,
+				mr.creation_date,
+				mr.last_modif_user,
+				mr.last_modif_date
+			from
+				pms_machine_requirement mr
+	</sql>
+	
+	
+    <select id="pmsMachineRequirementDTOIdBySequence" resultType="java.lang.Long" databaseId="postgre">
+			select nextval('pms_machine_requirement_id_sq')
+    </select>	
+	
+    <select id="insertMachineRequirementDTO" parameterType="MachineRequirementDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_machine_requirement(
+        			#{id},
+        			#{id_production_process_activity},
+        			#{id_machine},
+        			#{minutes_quantity},
+        			#{registration_date},
+        			#{creation_user})
+    </select>
+    
+    <!-- 
+    <select id="updateMachineRequirementDTO" parameterType="MachineRequirementDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_machine_requirement(
+        			#{id},
+        			#{activity_id},
+        			#{activity_description},
+        			#{creation_user})
+    </select>
+      -->
+  <update id="machineRequirementDTOSetEndValidityDate" parameterType="MachineRequirementDTO" databaseId="postgre">
+    update pms_machine_requirement 
+    				set
+						validity_end_date = now()
+   					where 
+    					id = #{id}
+  </update>
+  
+    <select id="listMachineRequirementDTO" parameterType="MachineRequirementDTO" resultMap="MachineRequirementDTOMap" databaseId="postgre">
+        <include refid="selectMachineRequirementDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and mr.id = #{id}
+				</if>
+				<if test="id_production_process_activity != null">
+					and mr.id_production_process_activity = #{id_production_process_activity}
+				</if>
+		</trim>
+				order by mr.validity_end_date desc, mr.registration_date desc
+    </select>
+	
+	
+
+</mapper>

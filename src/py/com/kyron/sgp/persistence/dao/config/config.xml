@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+           "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	
+	<settings>	
+	<!-- 
+	  <setting name="cacheEnabled" value="true"/>
+	  <setting name="lazyLoadingEnabled" value="true"/>
+	  <setting name="multipleResultSetsEnabled" value="true"/>
+	  <setting name="useColumnLabel" value="true"/>
+	  <setting name="useGeneratedKeys" value="false"/>
+	  <setting name="autoMappingBehavior" value="PARTIAL"/>
+	  <setting name="autoMappingUnknownColumnBehavior" value="WARNING"/>
+	  <setting name="defaultExecutorType" value="SIMPLE"/>
+	  <setting name="defaultStatementTimeout" value="25"/>
+	  <setting name="defaultFetchSize" value="100"/>
+	  <setting name="safeRowBoundsEnabled" value="false"/>
+	  <setting name="mapUnderscoreToCamelCase" value="false"/>
+	  <setting name="localCacheScope" value="SESSION"/>
+	  <setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString"/>
+	   -->
+	   
+	  <setting name="logImpl" value="SLF4J"/>
+	  <setting name="jdbcTypeForNull" value="OTHER"/>	  
+	</settings>
+	
+    <typeAliases>
+    	<!-- cash movements management -->
+    	<typeAlias type="py.com.kyron.sgp.bussines.cash.movements.management.domain.SaleInvoiceDTO" alias="SaleInvoiceDTO"/>
+    	<typeAlias type="py.com.kyron.sgp.bussines.cash.movements.management.domain.SaleInvoiceItemDTO" alias="SaleInvoiceItemDTO"/>
+    	<typeAlias type="py.com.kyron.sgp.bussines.cash.movements.management.domain.BranchOfficeDTO" alias="BranchOfficeDTO"/>
+    	<typeAlias type="py.com.kyron.sgp.bussines.cash.movements.management.domain.BranchOfficeSaleStationDTO" alias="BranchOfficeSaleStationDTO"/>
+    	<typeAlias type="py.com.kyron.sgp.bussines.cash.movements.management.domain.SaleInvoicePaymentDTO" alias="SaleInvoicePaymentDTO"/>
+    	<typeAlias type="py.com.kyron.sgp.bussines.cash.movements.management.domain.CreditNoteDTO" alias="CreditNoteDTO"/>
+    	<typeAlias type="py.com.kyron.sgp.bussines.cash.movements.management.domain.CreditNoteItemDTO" alias="CreditNoteItemDTO"/>
+    	<typeAlias type="py.com.kyron.sgp.bussines.cash.movements.management.domain.CashReceiptDocumentDTO" alias="CashReceiptDocumentDTO"/>
+    	<typeAlias type="py.com.kyron.sgp.bussines.cash.movements.management.domain.PurchaseInvoiceDTO" alias="PurchaseInvoiceDTO"/>
+    	<typeAlias type="py.com.kyron.sgp.bussines.cash.movements.management.domain.PurchaseInvoiceItemDTO" alias="PurchaseInvoiceItemDTO"/>
+    	<typeAlias type="py.com.kyron.sgp.bussines.cash.movements.management.domain.PurchaseInvoicePaymentDTO" alias="PurchaseInvoicePaymentDTO"/>
+    	<typeAlias type="py.com.kyron.sgp.bussines.cash.movements.management.domain.IncomeExpeditureReportDTO" alias="IncomeExpeditureReportDTO"/>
+    	<typeAlias type="py.com.kyron.sgp.bussines.cash.movements.management.domain.ProductCostSaleComparisonDTO" alias="ProductCostSaleComparisonDTO"/>
+    	<typeAlias type="py.com.kyron.sgp.bussines.cash.movements.management.domain.ManPowerExpenditurePerFunctionaryDTO" alias="ManPowerExpenditurePerFunctionaryDTO"/>
+    	<typeAlias type="py.com.kyron.sgp.bussines.cash.movements.management.domain.PurchaseInvoiceCreditNoteDTO" alias="PurchaseInvoiceCreditNoteDTO"/>
+    	<typeAlias type="py.com.kyron.sgp.bussines.cash.movements.management.domain.PurchaseInvoiceCreditNoteItemDTO" alias="PurchaseInvoiceCreditNoteItemDTO"/>
+    	    	
+    	<!-- commercial management -->
+        <typeAlias type="py.com.kyron.sgp.bussines.comercialmanagement.domain.CurrencyDTO" alias="CurrencyDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.comercialmanagement.domain.ProductDTO" alias="ProductDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.comercialmanagement.domain.CurrencyExchangeRateDTO" alias="CurrencyExchangeRateDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.comercialmanagement.domain.OrderDTO" alias="OrderDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.comercialmanagement.domain.OrderItemDTO" alias="OrderItemDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.comercialmanagement.domain.CreditOrderChargeConditionDTO" alias="CreditOrderChargeConditionDTO"/>
+        
+        <!-- persons management -->
+        <typeAlias type="py.com.kyron.sgp.bussines.personmanagement.domain.PersonDTO" alias="PersonDTO"/>
+        
+        <!-- application segurity -->
+        <typeAlias type="py.com.kyron.sgp.bussines.applicationsecurity.domain.ApplicationSecurityProgramDTO" alias="ApplicationSecurityProgramDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.applicationsecurity.domain.ApplicationSecurityRolDTO" alias="ApplicationSecurityRolDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.applicationsecurity.domain.ApplicationSecurityRolProgramDTO" alias="ApplicationSecurityRolProgramDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.applicationsecurity.domain.ApplicationSecurityPersonRolDTO" alias="ApplicationSecurityPersonRolDTO"/>
+        
+        <!-- production management -->
+        <typeAlias type="py.com.kyron.sgp.bussines.productionmanagement.domain.MachineDTO" alias="MachineDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.productionmanagement.domain.RawMaterialDTO" alias="RawMaterialDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.productionmanagement.domain.MeasurmentUnitDTO" alias="MeasurmentUnitDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.productionmanagement.domain.TariffDTO" alias="TariffDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.productionmanagement.domain.ManPowerCostDTO" alias="ManPowerCostDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.productionmanagement.domain.RawMaterialCostDTO" alias="RawMaterialCostDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.productionmanagement.domain.MachineUseCostDTO" alias="MachineUseCostDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.productionmanagement.domain.ProductionProcessDTO" alias="ProductionProcessDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.productionmanagement.domain.ProductionProcessActivityDTO" alias="ProductionProcessActivityDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.productionmanagement.domain.RawMaterialRequirementDTO" alias="RawMaterialRequirementDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.productionmanagement.domain.ManPowerRequirementDTO" alias="ManPowerRequirementDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.productionmanagement.domain.MachineRequirementDTO" alias="MachineRequirementDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.productionmanagement.domain.ProductionProcessActivityInstanceDTO" alias="ProductionProcessActivityInstanceDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.productionmanagement.domain.OrderRawMaterialSufficiencyReportDTO" alias="OrderRawMaterialSufficiencyReportDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.productionmanagement.domain.OrderItemRawMaterialSufficiencyReportDTO" alias="OrderItemRawMaterialSufficiencyReportDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.productionmanagement.domain.OrderItemRawMaterialSufficiencyReportDetailDTO" alias="OrderItemRawMaterialSufficiencyReportDetailDTO"/>
+        
+        <!-- stock management -->
+        <typeAlias type="py.com.kyron.sgp.bussines.stockmanagement.domain.RawMaterialExistenceDTO" alias="RawMaterialExistenceDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.stockmanagement.domain.RawMaterialPurchaseRequestDTO" alias="RawMaterialPurchaseRequestDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.stockmanagement.domain.PAIRawMaterialSupplyDTO" alias="PAIRawMaterialSupplyDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.stockmanagement.domain.PAIRawMaterialSupplyPurchaseInvoiceAffectedDTO" alias="PAIRawMaterialSupplyPurchaseInvoiceAffectedDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.stockmanagement.domain.SaleInvoiceProductDeliverablesDTO" alias="SaleInvoiceProductDeliverablesDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.stockmanagement.domain.SaleInvoiceItemProductDeliverablesDTO" alias="SaleInvoiceItemProductDeliverablesDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.stockmanagement.domain.SaleInvoiceProductDepositMovementDTO" alias="SaleInvoiceProductDepositMovementDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.stockmanagement.domain.SaleInvoiceItemProductDepositMovementDTO" alias="SaleInvoiceItemProductDepositMovementDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.stockmanagement.domain.SIItemPDMProductInstanceInvolvedDTO" alias="SIItemPDMProductInstanceInvolvedDTO"/>
+        <typeAlias type="py.com.kyron.sgp.bussines.stockmanagement.domain.InsufficiencyRawMaterialReportDTO" alias="InsufficiencyRawMaterialReportDTO"/>
+    </typeAliases>
+    
+	<typeHandlers>
+	  	<typeHandler handler="py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler"/>
+	</typeHandlers>
+
+	<databaseIdProvider type="DB_VENDOR">
+		  <property name="Postgre" value="postgre"/>
+		  <property name="Oracle" value="oracle" />
+	</databaseIdProvider>
+			
+	<mappers>
+	<!-- cash movements management -->
+	  <mapper resource="py/com/kyron/sgp/persistence/cash/movements/management/dao/mapper/sale_invoice.xml"/>
+	  <mapper resource="py/com/kyron/sgp/persistence/cash/movements/management/dao/mapper/sale_invoice_payment.xml"/>
+	  <mapper resource="py/com/kyron/sgp/persistence/cash/movements/management/dao/mapper/credit_note.xml"/>
+	  <mapper resource="py/com/kyron/sgp/persistence/cash/movements/management/dao/mapper/purchase_invoice.xml"/>
+	  <mapper resource="py/com/kyron/sgp/persistence/cash/movements/management/dao/mapper/cash_movements_report.xml"/>
+	  
+	<!-- commercial management -->
+	  <mapper resource="py/com/kyron/sgp/persistence/comercialmanagement/dao/mapper/currency.xml"/>
+	  <mapper resource="py/com/kyron/sgp/persistence/comercialmanagement/dao/mapper/product.xml"/>
+	  <mapper resource="py/com/kyron/sgp/persistence/comercialmanagement/dao/mapper/order.xml"/>
+	  <mapper resource="py/com/kyron/sgp/persistence/comercialmanagement/dao/mapper/order_item.xml"/>
+	  
+	   <!-- persons management -->
+	  <mapper resource="py/com/kyron/sgp/persistence/personmanagement/dao/mapper/person.xml"/>
+	  
+	  <!-- application segurity -->
+	  <mapper resource="py/com/kyron/sgp/persistence/applicationsecurity/dao/mapper/application_security.xml"/>
+	  
+	  <!-- production management -->
+	  <mapper resource="py/com/kyron/sgp/persistence/productionmanagement/dao/mapper/machine.xml"/>
+	  <mapper resource="py/com/kyron/sgp/persistence/productionmanagement/dao/mapper/raw_material.xml"/>
+	  <mapper resource="py/com/kyron/sgp/persistence/productionmanagement/dao/mapper/measurment_unit.xml"/>
+	  <mapper resource="py/com/kyron/sgp/persistence/productionmanagement/dao/mapper/tariff.xml"/>
+	  <mapper resource="py/com/kyron/sgp/persistence/productionmanagement/dao/mapper/manpower_cost.xml"/>
+	  <mapper resource="py/com/kyron/sgp/persistence/productionmanagement/dao/mapper/production_process.xml"/>
+	  <mapper resource="py/com/kyron/sgp/persistence/productionmanagement/dao/mapper/production_process_activity.xml"/>
+	  <mapper resource="py/com/kyron/sgp/persistence/productionmanagement/dao/mapper/raw_material_requirement.xml"/>
+	  <mapper resource="py/com/kyron/sgp/persistence/productionmanagement/dao/mapper/man_power_requirement.xml"/>
+	  <mapper resource="py/com/kyron/sgp/persistence/productionmanagement/dao/mapper/machine_requirement.xml"/>
+	  
+	  <!-- stock management -->
+	  <mapper resource="py/com/kyron/sgp/persistence/stockmanagement/dao/mapper/raw_material_existence.xml"/>
+	  <mapper resource="py/com/kyron/sgp/persistence/stockmanagement/dao/mapper/raw_material_purchase_request.xml"/>
+	  <mapper resource="py/com/kyron/sgp/persistence/stockmanagement/dao/mapper/product_deposit_movement.xml"/>
+	</mappers>
+
+</configuration>

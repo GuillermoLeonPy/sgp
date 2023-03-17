@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="py.com.kyron.sgp.persistence.productionmanagement.dao.ProductionProcessActivityDAO">
+	
+	<resultMap type="ProductionProcessActivityDTO" id="ProductionProcessActivityDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="activity_id" 	  	  	 property="activity_id"			javaType="string"/>
+		<result column="activity_description" 	  	  	 property="activity_description"			javaType="string"/>
+		<result column="id_production_process" 	  	  	 property="id_production_process"			javaType="long"/>
+		<result column="minutes_quantity" 	  	  	 property="minutes_quantity"			javaType="long"/>
+		<result column="registration_date" 	  	  	 property="registration_date"	javaType="java.util.Date"/>
+		<result column="validity_end_date" 	  	  	 property="validity_end_date"	javaType="java.util.Date"/>
+		<result column="id_previous_activity" 	  	  	 property="id_previous_activity"			javaType="long"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+	</resultMap>
+	
+	<sql id="selectProductionProcessActivityDTO">
+			select 
+				ppa.id,
+				ppa.activity_id,
+				ppa.activity_description,
+				ppa.id_production_process,
+				ppa.minutes_quantity,
+				ppa.registration_date,
+				ppa.validity_end_date,
+				ppa.id_previous_activity,
+				ppa.creation_user,
+				ppa.creation_date,
+				ppa.last_modif_user,
+				ppa.last_modif_date
+			from
+				pms_production_process_activity ppa
+	</sql>
+	
+	
+    <select id="pmsProductionProcessActivityDTOIdBySequence" parameterType="long" resultType="java.lang.Long" databaseId="postgre">
+			<!-- select nextval('pms_production_process_activity_id_sq')  -->
+			select f_pms_production_process_activity_id_sq(#{id})
+    </select>	
+	
+    <select id="insertProductionProcessActivityDTO" parameterType="ProductionProcessActivityDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_production_process_activity(
+        			#{id},
+        			#{activity_id},
+        			#{activity_description},
+        			#{minutes_quantity},
+        			#{id_production_process},
+        			#{id_previous_activity},
+        			#{registration_date},
+        			#{creation_user})
+    </select>
+ 
+    <!-- 
+    <select id="updateProductionProcessActivityDTO" parameterType="ProductionProcessActivityDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_production_process_activity(
+        			#{id},
+        			#{activity_id},
+        			#{activity_description},
+        			#{creation_user})
+    </select>
+      -->
+    <select id="listProductionProcessActivityDTO" parameterType="ProductionProcessActivityDTO" resultMap="ProductionProcessActivityDTOMap" databaseId="postgre">
+        <include refid="selectProductionProcessActivityDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and ppa.id = #{id}
+				</if>
+				<if test="id_production_process != null">
+					and ppa.id_production_process = #{id_production_process}
+				</if>
+		</trim>
+				order by ppa.validity_end_date desc, ppa.registration_date asc, ppa.activity_id asc
+    </select>
+	
+	
+	<select id="listProductionProcessActivityDTOByIdProductionProcess" parameterType="long" resultMap="ProductionProcessActivityDTOMap" databaseId="postgre">
+			select 
+				ppa.id,
+				ppa.activity_id,
+				ppa.activity_description,
+				ppa.id_production_process,
+				ppa.minutes_quantity,
+				ppa.registration_date,
+				ppa.validity_end_date,
+				ppa.id_previous_activity,
+				ppa.creation_user,
+				ppa.creation_date,
+				ppa.last_modif_user,
+				ppa.last_modif_date
+			from
+				pms_production_process_activity ppa
+			where 
+				ppa.id = (select id from pms_production_process_activity 
+							where 
+							id_production_process = #{id_production_process} 
+							and id_previous_activity is null)
+			
+			UNION ALL
+			
+			select 
+				pppa.id,
+				pppa.activity_id,
+				pppa.activity_description,
+				pppa.id_production_process,
+				pppa.minutes_quantity,
+				pppa.registration_date,
+				pppa.validity_end_date,
+				pppa.id_previous_activity,
+				pppa.creation_user,
+				pppa.creation_date,
+				pppa.last_modif_user,
+				pppa.last_modif_date
+			from
+			(
+					with recursive y as
+						(select x
+						  from pms_production_process_activity x
+						  where id_previous_activity = 
+						  					(select id from pms_production_process_activity 
+						  					where 
+						  						id_production_process = #{id_production_process}
+						  						and id_previous_activity is null)
+						UNION ALL
+						select xi
+						  from y
+						  join pms_production_process_activity xi
+						  on xi.id_previous_activity = (y.x).id
+						)
+					select 
+					(y.x).id,
+					(y.x).activity_id,
+					(y.x).activity_description,
+					(y.x).id_production_process,
+					(y.x).minutes_quantity,
+					(y.x).registration_date,
+					(y.x).validity_end_date,
+					(y.x).id_previous_activity,
+					(y.x).creation_user,
+					(y.x).creation_date,
+					(y.x).last_modif_user,
+					(y.x).last_modif_date
+					from y
+					<!-- ORDER BY (y.x).id_previous_activity  -->
+			) pppa ;
+	
+	</select>
+	
+    <!-- ####################################################################################################### -->
+    <!-- ################################## ProductionProcessActivityInstanceDTO ############################### -->
+    <!-- ####################################################################################################### -->
+	
+	<resultMap type="ProductionProcessActivityInstanceDTO" id="ProductionProcessActivityInstanceDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="id_production_activity" 	  	  	 property="id_production_activity"			javaType="long"/>
+		<result column="id_person" 	  	  	 property="id_person"			javaType="long"/>
+		<result column="id_order" 	  	  	 property="id_order"			javaType="long"/>
+		<result column="id_order_item" 	  	  	 property="id_order_item"			javaType="long"/>
+		<result column="id_product" 	  	  	 property="id_product"			javaType="long"/>
+		<result column="require_parcial_product_recall" 	  	  	 property="require_parcial_product_recall"			javaType="java.lang.Boolean" typeHandler="py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler"/>
+		<result column="parcial_product_recall_date" 	  	  	 property="parcial_product_recall_date"	javaType="java.util.Date"/>
+		<result column="recall_locker_number" 	  	  	 property="recall_locker_number"			javaType="long"/>
+		<result column="is_asignable" 	  	  	 property="is_asignable"			javaType="java.lang.Boolean" typeHandler="py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler"/>
+		<result column="assignment_date" 	  	  	 property="assignment_date"	javaType="java.util.Date"/>
+		<result column="delivers_product_instance" 	  	  	 property="delivers_product_instance"			javaType="java.lang.Boolean" typeHandler="py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler"/>
+		<result column="delivers_partial_result" 	  	  	 property="delivers_partial_result"			javaType="java.lang.Boolean" typeHandler="py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler"/>
+		<result column="partial_result_delivery_date" 	  	  	 property="partial_result_delivery_date"	javaType="java.util.Date"/>
+		<result column="occupied_locker_number" 	  	  	 property="occupied_locker_number"			javaType="long"/>		
+		<result column="status" 	  	  	 property="status"			javaType="string"/>
+		<result column="previous_status" 	  	  	 property="previous_status"			javaType="string"/>
+		<result column="next_status" 	  	  	 property="next_status"			javaType="string"/>
+		<result column="activity_instance_unique_number" 	  	  	 property="activity_instance_unique_number"			javaType="long"/>
+		<result column="product_instance_unique_number" 	  	  	 property="product_instance_unique_number"			javaType="long"/>
+		<result column="instantiation_date" 	  	  	 property="instantiation_date"	javaType="java.util.Date"/>
+		<result column="activity_start_work_date" 	  	  	 property="activity_start_work_date"	javaType="java.util.Date"/>
+		<result column="activity_finish_work_date" 	  	  	 property="activity_finish_work_date"	javaType="java.util.Date"/>
+		<result column="activity_cancellation_date" 	  	  	 property="activity_cancellation_date"	javaType="java.util.Date"/>
+		<result column="activity_cancellation_reason_description" 	  	  	 property="activity_cancellation_reason_description"			javaType="string"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+	</resultMap>
+	
+	
+	<sql id="selectProductionProcessActivityInstanceDTO">
+			select 
+					ppai.id,
+					ppai.id_production_activity,
+					ppai.id_person,
+					ppai.id_order,
+					ppai.id_order_item,
+					ppai.id_product,
+					ppai.require_parcial_product_recall,
+					ppai.parcial_product_recall_date,
+					ppai.recall_locker_number,
+					ppai.is_asignable,
+					ppai.assignment_date,
+					ppai.delivers_product_instance,
+					ppai.delivers_partial_result,
+					ppai.partial_result_delivery_date,
+					ppai.occupied_locker_number,
+					ppai.status,
+					ppai.previous_status,
+					ppai.next_status,
+					ppai.activity_instance_unique_number,
+					ppai.product_instance_unique_number,
+					ppai.instantiation_date,
+					ppai.activity_start_work_date,
+					ppai.activity_finish_work_date,
+					ppai.activity_cancellation_date,
+					ppai.activity_cancellation_reason_description,
+					ppai.creation_user,
+					ppai.creation_date,
+					ppai.last_modif_user,
+					ppai.last_modif_date
+
+			from
+				pms_production_activity_instance ppai
+	</sql>
+	<sql id="selectProductionProcessActivityInstanceDTO_history">
+			select 
+					ppai.id,
+					ppai.id_production_activity,
+					ppai.id_person,
+					ppai.id_order,
+					ppai.id_order_item,
+					ppai.id_product,
+					ppai.require_parcial_product_recall,
+					ppai.parcial_product_recall_date,
+					ppai.recall_locker_number,
+					ppai.is_asignable,
+					ppai.assignment_date,
+					ppai.delivers_product_instance,
+					ppai.delivers_partial_result,
+					ppai.partial_result_delivery_date,
+					ppai.occupied_locker_number,
+					ppai.status,
+					ppai.previous_status,
+					ppai.next_status,
+					ppai.activity_instance_unique_number,
+					ppai.product_instance_unique_number,
+					ppai.instantiation_date,
+					ppai.activity_start_work_date,
+					ppai.activity_finish_work_date,
+					ppai.activity_cancellation_date,
+					ppai.activity_cancellation_reason_description,
+					ppai.creation_user,
+					ppai.creation_date,
+					ppai.last_modif_user,
+					ppai.last_modif_date
+
+			from
+				pms_production_activity_instance_history ppai
+	</sql>	
+	
+    <select id="instantiateProductionProcessActivityInstanceDTO" parameterType="ProductionProcessActivityInstanceDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_instantiate_production_activities(
+        			#{id_order},
+        			#{creation_user})
+    </select>
+
+    <select id="assignProductionProcessActivityInstanceDTO" parameterType="ProductionProcessActivityInstanceDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_production_activity_person_assignment(
+        			#{id},
+        			#{id_person},
+        			#{last_modif_user})
+    </select>
+
+    <select id="finalizeProductionProcessActivityInstanceDTO" parameterType="ProductionProcessActivityInstanceDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_finalize_activity(
+        			#{id},
+        			#{last_modif_user})
+    </select>
+
+    <select id="allocateHalfWayProductProductionProcessActivityInstanceDTO" parameterType="ProductionProcessActivityInstanceDTO" resultType="java.lang.Long" databaseId="postgre">
+        SELECT 
+        		f_allocate_halfway_product(
+        			#{activity_instance_unique_number},
+        			#{last_modif_user})
+    </select>
+    
+    <select id="effectuatePartialProductRecallProductionProcessActivityInstanceDTO" parameterType="ProductionProcessActivityInstanceDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		f_empty_locker(
+        			#{recall_locker_number},
+        			#{activity_instance_unique_number},
+        			#{last_modif_user})
+    </select>
+
+    <select id="deliversFinalProductProductionProcessActivityInstanceDTO" parameterType="ProductionProcessActivityInstanceDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_product_deposit_movement(
+        			#{id},
+        			#{last_modif_user})
+    </select>
+                        
+    <select id="listProductionProcessActivityInstanceDTO" parameterType="ProductionProcessActivityInstanceDTO" resultMap="ProductionProcessActivityInstanceDTOMap" databaseId="postgre">
+        <include refid="selectProductionProcessActivityInstanceDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+				<if test="id != null">
+					and ppai.id = #{id}
+				</if>
+				<if test="activity_instance_unique_number != null">
+					and ppai.activity_instance_unique_number = #{activity_instance_unique_number}
+				</if>
+				<if test="id_person != null">
+					and ppai.id_person = #{id_person}
+				</if>
+				<if test="id_order != null">
+					and ppai.id_order = #{id_order}
+				</if>
+				<if test="is_asignable != null">
+					and ppai.is_asignable = #{is_asignable,jdbcType=VARCHAR,typeHandler=py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler}
+				</if>
+				<if test="require_parcial_product_recall != null">
+					and ppai.require_parcial_product_recall = #{require_parcial_product_recall,jdbcType=VARCHAR,typeHandler=py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler}
+				</if>
+				<if test="delivers_partial_result != null">
+					and ppai.delivers_partial_result = #{delivers_partial_result,jdbcType=VARCHAR,typeHandler=py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler}
+				</if>
+				<if test="status != null and or_status == null">
+					and ppai.status = #{status}
+				</if>
+				<if test="status != null and or_status != null">
+					and ppai.status = #{status} or ppai.status = #{or_status}
+				</if>
+				<if test="next_status != null">
+					and ppai.next_status = #{next_status}
+				</if>
+				<if test="activity_start_work_date_empty != null and activity_start_work_date_empty == true">
+					and ppai.activity_start_work_date is null
+				</if>
+				<if test="activity_start_work_date_empty != null and activity_start_work_date_empty == false">
+					and ppai.activity_start_work_date is not null
+				</if>
+				<if test="activity_finish_work_date_empty != null and activity_finish_work_date_empty == true">
+					and ppai.activity_finish_work_date is null
+				</if>
+				<if test="activity_finish_work_date_empty != null and activity_finish_work_date_empty == false">
+					and ppai.activity_finish_work_date is not null
+				</if>
+				<if test="assignment_date_empty != null and assignment_date_empty == true">
+					and ppai.assignment_date is null
+				</if>
+		</trim>
+				order by ppai.id
+    </select>
+    
+    <select id="listProductionProcessActivityInstanceDTOHistory" parameterType="ProductionProcessActivityInstanceDTO" resultMap="ProductionProcessActivityInstanceDTOMap" databaseId="postgre">
+        <include refid="selectProductionProcessActivityInstanceDTO_history"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+				<if test="id != null">
+					and ppai.id = #{id}
+				</if>
+				<if test="activity_instance_unique_number != null">
+					and ppai.activity_instance_unique_number = #{activity_instance_unique_number}
+				</if>
+				<if test="id_person != null">
+					and ppai.id_person = #{id_person}
+				</if>
+				<if test="id_order != null">
+					and ppai.id_order = #{id_order}
+				</if>				
+		</trim>
+				order by ppai.id
+    </select>    
+    
+   	<select id="getMachineRequerimentByIdOrderIdProductIdProductionProcessActivity" parameterType="ProductionProcessActivityInstanceDTO" resultType="java.lang.Long" databaseId="postgre">
+			select 
+					obppam.id_machine_requirement
+			from
+				pms_order_budget_production_process_activity_machine obppam,
+				pms_order_budget_production_process_activity obppa,
+				pms_order_budget_product obp,
+				pms_order ord
+			where
+				ord.id = #{id_order}
+				and ord.identifier_number = obp.order_identifier_number
+				and obp.id_product = #{id_product}
+				and obppa.id_production_process_activity = #{id_production_activity}
+				and obppam.id_order_budget_production_process_activity = obppa.id
+				and obppa.id_order_budget_product = obp.id
+    </select>
+
+    <!-- ####################################################################################################### -->
+    <!-- ################################## ProductionProcessActivityInstanceDTO ############################### -->
+    <!-- ####################################################################################################### -->
+</mapper>

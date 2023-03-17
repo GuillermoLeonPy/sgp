@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="py.com.kyron.sgp.persistence.productionmanagement.dao.RawMaterialRequirementDAO">
+	
+	<resultMap type="RawMaterialRequirementDTO" id="RawMaterialRequirementDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="id_raw_material" 	  	  	 property="id_raw_material"			javaType="long"/>
+		<result column="id_measurment_unit" 	  	  	 property="id_measurment_unit"			javaType="long"/>
+		<result column="id_production_process_activity" 	  	  	 property="id_production_process_activity"			javaType="long"/>
+		<result column="quantity" 	  	  	 property="quantity"			javaType="java.math.BigDecimal"/>
+		<result column="registration_date" 	  	  	 property="registration_date"	javaType="java.util.Date"/>
+		<result column="validity_end_date" 	  	  	 property="validity_end_date"	javaType="java.util.Date"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+	</resultMap>
+	
+	<sql id="selectRawMaterialRequirementDTO">
+			select 
+				rmr.id,
+				rmr.id_raw_material,
+				rmr.id_measurment_unit,
+				rmr.id_production_process_activity,
+				rmr.quantity,
+				rmr.registration_date,
+				rmr.validity_end_date,
+				rmr.creation_user,
+				rmr.creation_date,
+				rmr.last_modif_user,
+				rmr.last_modif_date
+			from
+				pms_raw_material_requirement rmr
+	</sql>
+	
+	
+    <select id="pmsRawMaterialRequirementDTOIdBySequence" parameterType="long" resultType="java.lang.Long" databaseId="postgre">
+			<!-- select nextval('pms_raw_material_requirement_id_sq')  -->
+			select f_pms_raw_material_requirement_id_sq(#{id})
+    </select>	
+	
+    <select id="insertRawMaterialRequirementDTO" parameterType="RawMaterialRequirementDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_raw_material_requirement(
+        			#{id},
+        			#{id_raw_material},
+        			#{id_measurment_unit},
+        			#{id_production_process_activity},
+        			#{quantity},
+        			#{registration_date},
+        			#{creation_user})
+    </select>
+    
+   
+    <!-- 
+    <select id="updateRawMaterialRequirementDTO" parameterType="RawMaterialRequirementDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_raw_material_requirement(
+        			#{id},
+        			#{activity_id},
+        			#{activity_description},
+        			#{creation_user})
+    </select>
+      -->
+      
+  <update id="rawMaterialRequirementDTOSetEndValidityDate" parameterType="RawMaterialRequirementDTO" databaseId="postgre">
+    update pms_raw_material_requirement 
+    				set
+						validity_end_date = now()
+   					where 
+    					id = #{id}
+  </update>
+      
+    <select id="listRawMaterialRequirementDTO" parameterType="RawMaterialRequirementDTO" resultMap="RawMaterialRequirementDTOMap" databaseId="postgre">
+        <include refid="selectRawMaterialRequirementDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and rmr.id = #{id}
+				</if>
+				<if test="id_production_process_activity != null">
+					and rmr.id_production_process_activity = #{id_production_process_activity}
+				</if>
+		</trim>
+				order by rmr.validity_end_date desc, rmr.id_raw_material asc, rmr.id_measurment_unit asc
+    </select>
+	
+	
+
+</mapper>

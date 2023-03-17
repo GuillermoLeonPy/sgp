@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="py.com.kyron.sgp.persistence.cash.movements.management.dao.SaleInvoiceDAO">
+	
+	<resultMap type="SaleInvoiceDTO" id="SaleInvoiceDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="id_person" 	  	  	 property="id_person"			javaType="long"/>
+		<result column="id_currency" 	  	  	 property="id_currency"			javaType="long"/>
+		<result column="id_order" 	  	  	 property="id_order"			javaType="long"/>
+		<result column="payment_condition" 	  	  	 property="payment_condition"			javaType="string"/>
+		<result column="status" 	  	  	 property="status"			javaType="string"/>
+		<result column="previous_status" 	  	  	 property="previous_status"			javaType="string"/>
+		<result column="emission_date" 	  	  	 property="emission_date"			javaType="java.util.Date"/>
+		<result column="cancellation_date" 	  	  	 property="cancellation_date"			javaType="java.util.Date"/>
+		<result column="annulment_date" 	  	  	 property="annulment_date"			javaType="java.util.Date"/>
+		<result column="annulment_reason_description" 	  	  	 property="annulment_reason_description"			javaType="string"/>
+		<result column="identifier_number" 	  	  	 property="identifier_number"			javaType="string"/>
+		<result column="total_amount" 	  	  	 property="total_amount"			javaType="java.math.BigDecimal"/>
+		<result column="value_added_amount" 	  	  	 property="value_added_amount"			javaType="java.math.BigDecimal"/>
+		<result column="total_tax_amount" 	  	  	 property="total_tax_amount"			javaType="java.math.BigDecimal"/>
+		<result column="exempt_amount" 	  	  	 property="exempt_amount"			javaType="java.math.BigDecimal"/>
+		<result column="value_added_tax_10_amount" 	  	  	 property="value_added_tax_10_amount"			javaType="java.math.BigDecimal"/>
+		<result column="value_added_tax_5_amount" 	  	  	 property="value_added_tax_5_amount"			javaType="java.math.BigDecimal"/>
+		<result column="tax_10_amount" 	  	  	 property="tax_10_amount"			javaType="java.math.BigDecimal"/>
+		<result column="tax_5_amount" 	  	  	 property="tax_5_amount"			javaType="java.math.BigDecimal"/>
+		<result column="bussines_name" 	  	  	 property="bussines_name"			javaType="string"/>
+		<result column="bussines_ci_ruc" 	  	  	 property="bussines_ci_ruc"			javaType="string"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+		<result column="id_branch_office_sale_station" 	  	  	 property="id_branch_office_sale_station"			javaType="long"/>
+		<result column="sale_invoice_stamp_number" 	  	  	 property="sale_invoice_stamp_number"			javaType="java.math.BigDecimal"/>
+		<result column="id_sale_invoice_stamping_numeration" 	  	  	 property="id_sale_invoice_stamping_numeration"			javaType="long"/>
+	</resultMap>
+	
+	<sql id="selectSaleInvoiceDTO">
+			select 
+					invoice.id,
+					invoice.id_person,
+					invoice.id_currency,
+					invoice.id_order,
+					invoice.payment_condition,
+					invoice.status,
+					invoice.previous_status,
+					invoice.emission_date,
+					invoice.cancellation_date,
+					invoice.annulment_date,
+					invoice.annulment_reason_description,
+					invoice.identifier_number,
+					invoice.total_amount,
+					invoice.value_added_amount,
+					invoice.total_tax_amount,
+					invoice.exempt_amount,
+					invoice.value_added_tax_10_amount,
+					invoice.value_added_tax_5_amount,
+					invoice.tax_10_amount,
+					invoice.tax_5_amount,
+					invoice.bussines_name,
+					invoice.bussines_ci_ruc,
+					invoice.creation_user,
+					invoice.creation_date,
+					invoice.last_modif_user,
+					invoice.last_modif_date,
+					invoice.id_branch_office_sale_station,
+					invoice.sale_invoice_stamp_number,
+					invoice.id_sale_invoice_stamping_numeration
+					
+			from
+				pms_sale_invoice invoice
+	</sql>
+	
+    <select id="pmsSaleInvoiceDTOIdBySequence" resultType="java.lang.Long" databaseId="postgre">
+			select nextval('pms_sale_invoice_id_sq')
+    </select>	
+    
+    <select id="insertSaleInvoiceDTO" parameterType="SaleInvoiceDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_sale_invoice(#{id},
+								#{id_order},
+								#{id_branch_office_sale_station},
+								#{creation_user})
+    </select>
+
+    <select id="reGenerateSaleInvoiceDTO" parameterType="SaleInvoiceDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_ri_pms_sale_invoice(#{id},
+								#{id_order},
+								#{last_modif_user})
+    </select>    
+    
+    <select id="annulSaleInvoiceDTO" parameterType="SaleInvoiceDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_annul_sale_invoice(#{id},
+								#{last_modif_user})
+    </select>
+
+    <select id="updateSaleInvoiceDTO" parameterType="SaleInvoiceDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_u_pms_sale_invoice(#{id},
+								#{status},
+								#{value_added_tax_10_amount},
+								#{value_added_tax_5_amount},
+								#{exempt_amount},
+								#{last_modif_user})
+    </select>
+    
+    <select id="listSaleInvoiceDTO" parameterType="SaleInvoiceDTO" resultMap="SaleInvoiceDTOMap" databaseId="postgre">
+        <include refid="selectSaleInvoiceDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and invoice.id = #{id}
+				</if>
+				<if test="id_person != null">
+					and invoice.id_person = #{id_person}
+				</if>
+				<if test="emissionDateBeginFilter != null and emissionDateEndFilter != null">
+					and invoice.emission_date between #{emissionDateBeginFilter} and #{emissionDateEndFilter}
+				</if>
+				<if test="queryForSalesTaxReport != null and queryForSalesTaxReport == true">
+					and (invoice.status = 'application.common.status.canceled' or invoice.status = 'application.common.status.partial.balance')
+				</if>
+		</trim>
+				order by invoice.id desc
+    </select>
+    
+    <select id="getSaleInvoiceStampingNumber" parameterType="SaleInvoiceDTO" resultType="java.math.BigDecimal" databaseId="postgre">
+			select 
+					sis.sale_invoice_stamping_number
+			from
+					pms_sale_invoice_stamping sis,
+					pms_sale_invoice_stamping_numeration sisn,
+					pms_sale_invoice si
+			where
+					si.id_sale_invoice_stamping_numeration = sisn.id
+					and sisn.id_sale_invoice_stamping = sis.id
+					and si.id = #{id}
+    </select>
+
+    <!-- ####################################################################################################### -->
+    <!-- ################################## SALE INVOICE ITEMS ################################################# -->
+    <!-- ####################################################################################################### -->
+
+	<resultMap type="SaleInvoiceItemDTO" id="SaleInvoiceItemDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="id_sale_invoice" 	  	  	 property="id_sale_invoice"			javaType="long"/>
+		<result column="id_product" 	  	  	 property="id_product"			javaType="long"/>
+		<result column="status" 	  	  	 property="status"			javaType="string"/>
+		<result column="previous_status" 	  	  	 property="previous_status"			javaType="string"/>
+		<result column="quantity" 	  	  	 property="quantity"			javaType="long"/>
+		<result column="unit_price_amount" 	  	  	 property="unit_price_amount"			javaType="java.math.BigDecimal"/>
+		<result column="exempt_unit_price_amount" 	  	  	 property="exempt_unit_price_amount"			javaType="java.math.BigDecimal"/>
+		<result column="value_added_tax_10_unit_price_amount" 	  	  	 property="value_added_tax_10_unit_price_amount"			javaType="java.math.BigDecimal"/>
+		<result column="value_added_tax_5_unit_price_amount" 	  	  	 property="value_added_tax_5_unit_price_amount"			javaType="java.math.BigDecimal"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+	</resultMap>
+	
+	<sql id="selectOrderItem">
+			select 
+					sale_invoice_item.id,
+					sale_invoice_item.id_sale_invoice,
+					sale_invoice_item.id_product,
+					sale_invoice_item.status,
+					sale_invoice_item.previous_status,
+					sale_invoice_item.quantity,
+					sale_invoice_item.unit_price_amount,
+					sale_invoice_item.exempt_unit_price_amount,
+					sale_invoice_item.value_added_tax_10_unit_price_amount,
+					sale_invoice_item.value_added_tax_5_unit_price_amount,
+					sale_invoice_item.creation_user,
+					sale_invoice_item.creation_date,
+					sale_invoice_item.last_modif_user,
+					sale_invoice_item.last_modif_date
+			from
+				pms_sale_invoice_item sale_invoice_item
+	</sql>
+	
+
+    <select id="listSaleInvoiceItemDTO" parameterType="SaleInvoiceItemDTO" resultMap="SaleInvoiceItemDTOMap" databaseId="postgre">
+        <include refid="selectOrderItem"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and sale_invoice_item.id = #{id}
+				</if>
+				<if test="id_sale_invoice != null">
+					and sale_invoice_item.id_sale_invoice = #{id_sale_invoice}
+				</if>
+		</trim>
+				order by sale_invoice_item.id
+    </select>
+
+    <select id="updateSaleInvoiceItemDTO" parameterType="SaleInvoiceItemDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_u_pms_sale_invoice_item(#{id},
+								#{status},
+								#{quantity},
+								#{last_modif_user})
+    </select>
+    
+    <!-- ####################################################################################################### -->
+    <!-- ####################################################################################################### -->
+    <!-- ####################################################################################################### -->
+    
+	<resultMap type="BranchOfficeDTO" id="BranchOfficeDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="id_company" 	  	  	 property="id_company"			javaType="long"/>
+		<result column="id_code_ruc" 	  	  	 property="id_code_ruc"			javaType="string"/>
+		<result column="description" 	  	  	 property="description"			javaType="string"/>
+		<result column="telephone_number" 	  	  	 property="telephone_number"			javaType="string"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+	</resultMap>
+	
+	<sql id="selectBranchOfficeDTO">
+			select 
+					bo.id,
+					bo.id_company,
+					bo.id_code_ruc,
+					bo.description,
+					bo.telephone_number,
+					bo.creation_user,
+					bo.creation_date,
+					bo.last_modif_user,
+					bo.last_modif_date					
+			from
+				pms_branch_office bo
+	</sql>
+	
+    <select id="listBranchOfficeDTO" parameterType="BranchOfficeDTO" resultMap="BranchOfficeDTOMap" databaseId="postgre">
+        <include refid="selectBranchOfficeDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and bo.id = #{id}
+				</if>
+				<if test="id_company != null">
+					and bo.id_company = #{id_company}
+				</if>
+		</trim>
+				order by bo.id
+    </select>
+
+	<resultMap type="BranchOfficeSaleStationDTO" id="BranchOfficeSaleStationDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="id_company" 	  	  	 property="id_company"			javaType="long"/>
+		<result column="id_code_ruc" 	  	  	 property="id_code_ruc"			javaType="string"/>
+		<result column="description" 	  	  	 property="description"			javaType="string"/>
+		<result column="telephone_number" 	  	  	 property="telephone_number"			javaType="string"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+	</resultMap>
+	
+	<sql id="selectBranchOfficeSaleStationDTO">
+			select 
+					bost.id,
+					bost.id_branch_office,
+					bost.id_code_ruc,
+					bost.sale_invoice_description,
+					bost.creation_user,
+					bost.creation_date,
+					bost.last_modif_user,
+					bost.last_modif_date					
+			from
+				pms_branch_office_sale_station bost
+	</sql>
+	
+    <select id="listBranchOfficeSaleStationDTO" parameterType="BranchOfficeSaleStationDTO" resultMap="BranchOfficeSaleStationDTOMap" databaseId="postgre">
+        <include refid="selectBranchOfficeSaleStationDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and bost.id = #{id}
+				</if>
+				<if test="id_branch_office != null">
+					and bost.id_branch_office = #{id_branch_office}
+				</if>
+		</trim>
+				order by bost.id
+    </select>
+    
+    <select id="getSaleInvoiceStampingEffectiveBeginningDate" parameterType="SaleInvoiceDTO" resultType="java.util.Date" databaseId="postgre">
+		select
+			sis.effective_beginning_date
+		from
+			pms_sale_invoice_stamping sis,
+			pms_sale_invoice_stamping_numeration sisn,
+			pms_sale_invoice si
+		where
+			sis.id = sisn.id_sale_invoice_stamping
+			and sisn.id = si.id_sale_invoice_stamping_numeration
+			and si.id = #{id}
+    </select>
+    
+    <select id="getSaleInvoiceStampingEffectiveEndDate" parameterType="SaleInvoiceDTO" resultType="java.util.Date" databaseId="postgre">
+		select
+			sis.effective_end_date
+		from
+			pms_sale_invoice_stamping sis,
+			pms_sale_invoice_stamping_numeration sisn,
+			pms_sale_invoice si
+		where
+			sis.id = sisn.id_sale_invoice_stamping
+			and sisn.id = si.id_sale_invoice_stamping_numeration
+			and si.id = #{id}
+    </select>
+</mapper>

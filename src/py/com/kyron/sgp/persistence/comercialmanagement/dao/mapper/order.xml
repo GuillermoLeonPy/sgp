@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="py.com.kyron.sgp.persistence.comercialmanagement.dao.OrderDAO">
+	
+	<resultMap type="OrderDTO" id="OrderDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="id_person" 	  	  	 property="id_person"			javaType="long"/>
+		<result column="id_currency" 	  	  	 property="id_currency"			javaType="long"/>
+		<result column="payment_condition" 	  	  	 property="payment_condition"			javaType="string"/>
+		<result column="status" 	  	  	 property="status"			javaType="string"/>
+		<result column="previous_status" 	  	  	 property="previous_status"			javaType="string"/>
+		<result column="registration_date" 	  	  	 property="registration_date"			javaType="java.util.Date"/>
+		<result column="estimated_completion_date" 	  	  	 property="estimated_completion_date"			javaType="java.util.Date"/>
+		<result column="completion_date" 	  	  	 property="completion_date"			javaType="java.util.Date"/>
+		<result column="cancellation_date" 	  	  	 property="cancellation_date"			javaType="java.util.Date"/>
+		<result column="cancellation_reason_description" 	  	  	 property="cancellation_reason_description"			javaType="string"/>
+		<result column="identifier_number" 	  	  	 property="identifier_number"			javaType="long"/>
+		<result column="amount" 	  	  	 property="amount"			javaType="java.math.BigDecimal"/>
+		<result column="exempt_amount" 	  	  	 property="exempt_amount"			javaType="java.math.BigDecimal"/>
+		<result column="value_added_tax_10_amount" 	  	  	 property="value_added_tax_10_amount"			javaType="java.math.BigDecimal"/>
+		<result column="value_added_tax_5_amount" 	  	  	 property="value_added_tax_5_amount"			javaType="java.math.BigDecimal"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+		<result column="credit_order_fee_quantity" 	  	  	 property="credit_order_fee_quantity"			javaType="long"/>
+		<result column="credit_order_fee_periodicity_days_quantity" 	  	  	 property="credit_order_fee_periodicity_days_quantity"			javaType="long"/>
+		<result column="credit_order_payment_condition_surcharge_percentage" 	  	  	 property="credit_order_payment_condition_surcharge_percentage"			javaType="java.math.BigDecimal"/>
+		<result column="id_credit_order_charge_condition" 	  	  	 property="id_credit_order_charge_condition"			javaType="long"/>
+		<result column="production_activities_instantiation_date"    	 property="production_activities_instantiation_date"			javaType="java.util.Date"/>
+		<result column="havingAnyOrderItemWithPendingToInstanciateQuantity"		 	 property="havingAnyOrderItemWithPendingToInstanciateQuantity"			javaType="java.lang.Boolean" typeHandler="py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler"/>
+	</resultMap>
+	
+	<sql id="selectOrder">
+			select 
+					ord.id,
+					ord.id_person,
+					ord.id_currency,
+					ord.payment_condition,
+					ord.status,
+					ord.previous_status,
+					ord.registration_date,
+					ord.estimated_completion_date,
+					ord.completion_date,
+					ord.cancellation_date,
+					ord.cancellation_reason_description,
+					ord.identifier_number,
+					ord.amount,
+					ord.exempt_amount,
+					ord.value_added_tax_10_amount,
+					ord.value_added_tax_5_amount,
+					ord.creation_user,
+					ord.creation_date,
+					ord.last_modif_user,
+					ord.last_modif_date,
+					ord.credit_order_fee_quantity,
+					ord.credit_order_fee_periodicity_days_quantity,
+					ord.credit_order_payment_condition_surcharge_percentage,
+					ord.id_credit_order_charge_condition,
+					ord.production_activities_instantiation_date,
+					case when	exists 
+					(select id from pms_order_raw_material_sufficiency_report where id_order = ord.id 
+							and is_valid = 'S') then 'S' else 'N'
+					end havingAnyOrderItemWithPendingToInstanciateQuantity
+					
+			from
+				pms_order ord
+	</sql>
+	
+    <select id="pmsOrderDTOIdBySequence" resultType="java.lang.Long" databaseId="postgre">
+			select nextval('pms_order_id_sq')
+    </select>	
+    
+    <select id="pmsOrderDTOIdentifierNumberBySequence" resultType="java.lang.Long" databaseId="postgre">
+			select nextval('pms_order_identifier_number_sq')
+    </select>
+	
+    <select id="insertOrderDTO" parameterType="OrderDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_order(#{id},
+								#{id_person},
+								#{id_currency},
+								#{payment_condition},
+								#{registration_date},
+								#{estimated_completion_date},
+								#{identifier_number},
+								#{amount},
+								#{exempt_amount},
+								#{value_added_tax_10_amount},
+								#{value_added_tax_5_amount},
+								#{creation_user},
+								#{credit_order_fee_quantity},
+								#{credit_order_fee_periodicity_days_quantity},
+								#{credit_order_payment_condition_surcharge_percentage},
+								#{id_credit_order_charge_condition})
+    </select>
+    
+
+    <select id="updateOrderDTO" parameterType="OrderDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_u_pms_order(#{id},
+								#{id_person},
+								#{id_currency},
+								#{payment_condition},
+								#{estimated_completion_date},
+								#{amount},
+								#{exempt_amount},
+								#{value_added_tax_10_amount},
+								#{value_added_tax_5_amount},
+								#{last_modif_user},
+								#{credit_order_fee_quantity},
+								#{credit_order_fee_periodicity_days_quantity},
+								#{credit_order_payment_condition_surcharge_percentage},
+								#{id_credit_order_charge_condition},
+								#{status})
+    </select>
+    
+    <select id="listOrderDTO" parameterType="OrderDTO" resultMap="OrderDTOMap" databaseId="postgre">
+        <include refid="selectOrder"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and ord.id = #{id}
+				</if>
+				<if test="id_person != null">
+					and ord.id_person = #{id_person}
+				</if>
+				<if test="status != null">
+					and ord.status = #{status}
+				</if>
+				<if test="production_activities_instantiated_today != null and production_activities_instantiated_today == true">
+					or date_trunc('day',ord.production_activities_instantiation_date) = date_trunc('day', now())
+				</if>
+				<if test="havingAnyOrderItemWithPendingToInstanciateQuantity != null and havingAnyOrderItemWithPendingToInstanciateQuantity == true">
+					or					
+						(ord.status = 'application.common.status.in.progress'
+							and (select sum(in_progress_quantity) from pms_order_item 
+									where status != 'application.common.status.discarded' and id_order = ord.id) > 0
+						)
+					or					
+						(ord.status = 'application.common.status.in.progress'
+							and (select sum(pending_to_instanciate_quantity) from pms_order_item 
+									where status != 'application.common.status.discarded' and id_order = ord.id) > 0
+						)
+					 
+				</if>
+		</trim>
+				<if test="production_activities_instantiated_today != null and production_activities_instantiated_today == true">
+					order by ord.status, ord.production_activities_instantiation_date desc
+				</if>
+				<if test="production_activities_instantiated_today == null">
+					order by ord.id desc
+				</if>
+				
+    </select>
+	
+	<!-- ######################################################################################################### -->
+	<!-- ######################################################################################################### -->
+	<!-- #########################  pms_credit_order_charge_condition  ########################################### -->
+	<!-- ######################################################################################################### -->
+	<!-- ######################################################################################################### -->
+	
+	<resultMap type="CreditOrderChargeConditionDTO" id="CreditOrderChargeConditionDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="days_interval" 	  	  	 property="days_interval"			javaType="long"/>
+		<result column="registration_date" 	  	  	 property="registration_date"			javaType="java.util.Date"/>
+		<result column="validity_end_date" 	  	  	 property="validity_end_date"	javaType="java.util.Date"/>
+		<result column="days_interval_percent_increment" 	  	  	 property="days_interval_percent_increment"			javaType="java.math.BigDecimal"/>		
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+	</resultMap>
+	
+	<sql id="selectCreditOrderChargeConditionDTO">
+			select 
+					cocc.id,
+					cocc.days_interval,
+					cocc.days_interval_percent_increment,
+					cocc.registration_date,
+					cocc.validity_end_date,
+					cocc.creation_user,
+					cocc.creation_date,
+					cocc.last_modif_user,
+					cocc.last_modif_date
+					
+			from
+				pms_credit_order_charge_condition cocc
+	</sql>
+	
+    <select id="pmsCreditOrderChargeConditionDTOIdBySequence" resultType="java.lang.Long" databaseId="postgre">
+			select nextval('pms_credit_order_charge_condition_id_sq')
+    </select>	
+	
+    <select id="insertCreditOrderChargeConditionDTO" parameterType="CreditOrderChargeConditionDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_credit_order_charge_condition
+        						(#{id},
+								#{days_interval},
+								#{days_interval_percent_increment},
+								#{registration_date},
+								#{creation_user})
+    </select>
+    
+    <select id="updateCreditOrderChargeConditionDTO" parameterType="CreditOrderChargeConditionDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_u_pms_credit_order_charge_condition
+        						(#{id},
+								#{last_modif_user})
+    </select>
+
+    <select id="listCreditOrderChargeConditionDTO" parameterType="CreditOrderChargeConditionDTO" resultMap="CreditOrderChargeConditionDTOMap" databaseId="postgre">
+        <include refid="selectCreditOrderChargeConditionDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and cocc.id = #{id}
+				</if>
+		</trim>
+				order by cocc.validity_end_date desc, cocc.registration_date desc
+    </select>
+
+    <select id="getCreditOrderChargeConditionValidRowId" resultType="java.lang.Long" databaseId="postgre">
+			select 
+				id 
+			from pms_credit_order_charge_condition 
+				where 
+				validity_end_date is null
+				and is_active = 'S' 
+    </select>	
+    
+    
+    <!-- ######################################################################################################### -->
+	<!-- ######################################################################################################### -->
+	<!-- #########################  		ORDER_SUFFICIENCY REPORT 			################################## -->
+	<!-- ######################################################################################################### -->
+	<!-- ######################################################################################################### -->
+	
+	<sql id="selectOrderRawMaterialSufficiencyReportDTO">
+			select 
+					osr.id,
+					osr.id_order,
+					osr.report_emission_date,
+					osr.order_identifier_number,
+					osr.id_sale_invoice,
+					osr.sale_invoice_identifier_number,
+					osr.sale_invoice_emission_date,
+					osr.bussines_name,
+					osr.bussines_ci_ruc,
+					osr.sale_invoice_payment_condition,
+					osr.sale_invoice_status,
+					osr.sale_invoice_total_amount,
+					osr.currency_id_code					
+			from
+				v_app_dto_order_sufficiency_report osr
+	</sql>
+	
+	<select id="getOrderRawMaterialSufficiencyReportDTO" parameterType="OrderDTO" resultType="OrderRawMaterialSufficiencyReportDTO" databaseId="postgre">
+        <include refid="selectOrderRawMaterialSufficiencyReportDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and osr.id_order = #{id}
+				</if>
+		</trim>
+    </select>
+    
+	<sql id="selectOrderItemRawMaterialSufficiencyReportDTO">
+			select 
+				oisr.id,
+				oisr.id_order_raw_material_sufficiency_report,
+				oisr.id_order_item,
+				oisr.id_order,
+				oisr.id_product,
+				oisr.product_id,
+				oisr.product_description,
+				oisr.item_quantity,
+				oisr.entered_into_producction_quantity,
+				(select orderitem.in_progress_quantity from pms_order_item orderitem where orderitem.id = oisr.id_order_item) in_progress_quantity, 
+				oisr.pending_to_instanciate_quantity,
+				oisr.canceled_entering_production_by_document_quantity					
+			from
+				v_app_dto_order_item_sufficiency_report oisr
+	</sql>
+	
+	<select id="listOrderItemRawMaterialSufficiencyReportDTO" parameterType="OrderItemRawMaterialSufficiencyReportDTO" resultType="OrderItemRawMaterialSufficiencyReportDTO" databaseId="postgre">
+        <include refid="selectOrderItemRawMaterialSufficiencyReportDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id_order_raw_material_sufficiency_report != null">
+					and oisr.id_order_raw_material_sufficiency_report = #{id_order_raw_material_sufficiency_report}
+				</if>
+		</trim>
+    </select>
+
+
+	<sql id="selectOrderItemRawMaterialSufficiencyReportDetailDTO">
+			select 
+					oisrd.id,
+					oisrd.id_order_item_raw_material_sufficiency_report,
+					oisrd.id_order,
+					oisrd.id_order_item,
+					oisrd.id_raw_material,
+					oisrd.raw_material_id,
+					oisrd.id_measurment_unit,
+					oisrd.measurment_unit_id,
+					oisrd.available_quantity,
+					oisrd.sum_required_quantity,
+					oisrd.missing_quantity			
+			from
+				v_app_dto_order_item_sufficiency_report_detail oisrd
+	</sql>
+	
+	
+	<select id="listOrderItemRawMaterialSufficiencyReportDetailDTO" parameterType="OrderItemRawMaterialSufficiencyReportDetailDTO" resultType="OrderItemRawMaterialSufficiencyReportDetailDTO" databaseId="postgre">
+        <include refid="selectOrderItemRawMaterialSufficiencyReportDetailDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id_order_item_raw_material_sufficiency_report != null">
+					and oisrd.id_order_item_raw_material_sufficiency_report = #{id_order_item_raw_material_sufficiency_report}
+				</if>
+		</trim>
+    </select>
+    
+	<select id="listOrderItemRawMaterialSufficiencyReportDetailDTOByIdOrder" parameterType="java.lang.Long" resultType="OrderItemRawMaterialSufficiencyReportDetailDTO" databaseId="postgre">
+        		select
+							id_raw_material + id_measurment_unit  id,
+							id_order,
+							id_raw_material,
+							raw_material_id,
+							id_measurment_unit,
+							measurment_unit_id,
+							available_quantity,
+							sum(sum_required_quantity) sum_required_quantity,
+							sum(missing_quantity) missing_quantity
+				from
+							v_app_dto_order_item_sufficiency_report_detail
+				
+				where id_order = #{id_order}
+				
+							group by 
+							<!-- id, -->
+							id_order,
+							id_raw_material,
+							raw_material_id,
+							id_measurment_unit,
+							measurment_unit_id,
+							available_quantity
+
+    </select>
+</mapper>

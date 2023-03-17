@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="py.com.kyron.sgp.persistence.productionmanagement.dao.MachineDAO">
+	
+	<resultMap type="MachineDTO" id="MachineDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="machine_id" 	  	  	 property="machine_id"			javaType="string"/>
+		<result column="machine_description" 	  	  	 property="machine_description"			javaType="string"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+		<result column="has_valid_cost_registry"		 	 property="has_valid_cost_registry"			javaType="java.lang.Boolean" typeHandler="py.com.kyron.sgp.persistence.dao.config.typehandler.StringBooleanTypeHandler"/>
+	</resultMap>
+	
+	<sql id="selectMachine">
+			select 
+				machine.id,
+				machine.machine_id,
+				machine.machine_description,
+				machine.creation_user,
+				machine.creation_date,
+				machine.last_modif_user,
+				machine.last_modif_date,
+				case when exists (select id from pms_machine_use_cost where id_machine = machine.id and validity_end_date is null) then 'S' else 'N'
+				end has_valid_cost_registry
+			from
+				pms_machine machine
+	</sql>
+	
+    <select id="pmsMachineIdBySequence" resultType="java.lang.Long" databaseId="postgre">
+			select nextval('pms_machine_id_sq')
+    </select>	
+	
+    <select id="insertMachineDTO" parameterType="MachineDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_machine(
+        			#{id},
+        			#{machine_id},
+        			#{machine_description},
+        			#{creation_user})
+    </select>
+    
+    <!-- 
+    <select id="updateMachineDTO" parameterType="MachineDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_machine(
+        			#{id},
+        			#{machine_id},
+        			#{machine_description},
+        			#{creation_user})
+    </select>
+      -->
+    <select id="listMachineDTO" parameterType="MachineDTO" resultMap="MachineDTOMap" databaseId="postgre">
+        <include refid="selectMachine"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and machine.id = #{id}
+				</if>
+		</trim>
+				order by machine.machine_id
+    </select>
+	
+	<!-- ################################################################################################################## -->
+	<!-- ################################################################################################################## -->
+	<!-- ################################################################################################################## -->
+	<!-- ################################################################################################################## -->
+	
+	<!-- machine use cost  -->
+	
+	
+	<resultMap type="MachineUseCostDTO" id="MachineUseCostDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="id_machine" 	  	  	 property="id_machine"			javaType="long"/>
+		<result column="id_tariff" 	  	  	 property="id_tariff"			javaType="long"/>
+		<result column="tariff_amount" 	  	  	 property="tariff_amount"			javaType="java.math.BigDecimal"/>
+		<result column="registration_date" 	  	  	 property="registration_date"	javaType="java.util.Date"/>
+		<result column="validity_end_date" 	  	  	 property="validity_end_date"	javaType="java.util.Date"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+	</resultMap>
+	
+
+	<sql id="selectMachineUseCost">
+			select 
+					muc.id,
+					muc.id_machine,
+					muc.id_tariff,
+					muc.tariff_amount,
+					muc.registration_date,
+					muc.validity_end_date,
+					muc.creation_user,
+					muc.creation_date,
+					muc.last_modif_user,
+					muc.last_modif_date
+			from
+				pms_machine_use_cost muc
+	</sql>
+	
+	
+    <select id="pmsMachineUseCostDTOIdBySequence" resultType="java.lang.Long" databaseId="postgre">
+			select nextval('pms_machine_use_cost_id_sq')
+    </select>
+    
+    <select id="insertMachineUseCostDTO" parameterType="MachineUseCostDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT  p_i_pms_machine_use_cost
+        						(#{id},
+        						#{id_machine},
+        						#{id_tariff},
+        						#{tariff_amount},
+        						#{registration_date},
+        						#{creation_user})
+    </select>    
+
+    <select id="updateMachineUseCostDTO" parameterType="MachineUseCostDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT  p_u_pms_machine_use_cost
+        						(#{id},
+        						#{validity_end_date},
+        						#{last_modif_user})
+    </select>
+    
+    <select id="listMachineUseCostDTO" parameterType="MachineUseCostDTO" resultMap="MachineUseCostDTOMap">
+        <include refid="selectMachineUseCost"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and muc.id = #{id}
+				</if>
+				<if test="id_machine != null">
+					and muc.id_machine = #{id_machine}
+				</if>
+				<if test="active != null and active == true">
+					and muc.validity_end_date is null
+				</if>
+				<if test="active != null and active == false">
+					and muc.validity_end_date is not null
+				</if>
+		</trim>
+				order by muc.validity_end_date desc
+    </select>
+
+    <select id="getMachineUseCostValidRowId" parameterType="java.lang.Long" resultType="java.lang.Long" databaseId="postgre">
+			select 
+				id 
+			from pms_machine_use_cost 
+				where 
+				id_machine = #{id_machine}
+				and validity_end_date is null 
+    </select>  
+</mapper>

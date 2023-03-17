@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="py.com.kyron.sgp.persistence.stockmanagement.dao.RawMaterialPurchaseRequestDAO">
+	
+	<resultMap type="RawMaterialPurchaseRequestDTO" id="RawMaterialPurchaseRequestDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="id_raw_material" 	  	  	 property="id_raw_material"			javaType="long"/>
+		<result column="id_measurment_unit" 	  	  	 property="id_measurment_unit"			javaType="long"/>
+		<result column="id_person_supplier" 	  	  	 property="id_person_supplier"			javaType="long"/>
+		<result column="quantity" 	  	  	 property="quantity"			javaType="java.math.BigDecimal"/>
+		<result column="registration_date" 	  	  	 property="registration_date"			javaType="java.util.Date"/>
+		<result column="status" 	  	  	 property="status"			javaType="string"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+	</resultMap>
+	
+	<sql id="selectRawMaterialPurchaseRequestDTO">
+			select 
+				rmpr.id,
+				rmpr.id_raw_material,
+				rmpr.id_measurment_unit,
+				rmpr.id_person_supplier,
+				rmpr.quantity,
+				rmpr.registration_date,
+				rmpr.status,
+				rmpr.creation_user,
+				rmpr.creation_date,
+				rmpr.last_modif_user,
+				rmpr.last_modif_date
+			from
+				pms_raw_material_purchase_request rmpr
+	</sql>
+	
+    <select id="pmsRawMaterialPurchaseRequestDTOIdBySequence" resultType="java.lang.Long" databaseId="postgre">
+			select nextval('pms_raw_material_purchase_request_id_sq')
+    </select>	
+	
+    <select id="insertRawMaterialPurchaseRequestDTO" parameterType="RawMaterialPurchaseRequestDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_raw_material_purchase_request(
+        			#{id},
+        			#{id_raw_material},
+        			#{id_measurment_unit},
+        			#{id_person_supplier},
+        			#{quantity},
+        			#{registration_date},
+        			#{creation_user})
+    </select>
+
+    <select id="updateRawMaterialPurchaseRequestDTO" parameterType="RawMaterialPurchaseRequestDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_u_pms_raw_material_purchase_request(
+        			#{id},
+        			#{id_raw_material},
+        			#{id_measurment_unit},
+        			#{id_person_supplier},
+        			#{quantity},
+        			#{last_modif_user})
+    </select>    
+
+    <select id="listRawMaterialPurchaseRequestDTO" parameterType="RawMaterialPurchaseRequestDTO" resultMap="RawMaterialPurchaseRequestDTOMap" databaseId="postgre">
+        <include refid="selectRawMaterialPurchaseRequestDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and rmpr.id = #{id}
+				</if>
+				<if test="id_raw_material != null">
+					and rmpr.id_raw_material = #{id_raw_material}
+				</if>
+				<if test="id_measurment_unit != null">
+					and rmpr.id_measurment_unit = #{id_measurment_unit}
+				</if>
+				<if test="id_person_supplier != null">
+					and rmpr.id_person_supplier = #{id_person_supplier}
+				</if>
+		</trim>
+				order by rmpr.status desc
+    </select>
+	
+	<!-- ################################################################################################################## -->
+   
+</mapper>

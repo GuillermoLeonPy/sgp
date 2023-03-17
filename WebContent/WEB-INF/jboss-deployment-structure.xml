@@ -1,0 +1,22 @@
+<jboss-deployment-structure>
+  <deployment>
+     <!-- exclude-subsystem prevents a subsystems deployment unit processors running on a deployment -->
+     <!-- which gives basically the same effect as removing the subsystem, but it only affects single deployment -->
+     <exclude-subsystems>
+        <subsystem name="logging" />
+    </exclude-subsystems>
+	<exclusions>
+		<module name="org.hibernate.validator" />
+		<module name="javax.validation.api" />
+		<module name="com.fasterxml.classmate"/>
+		<module name="org.jboss.logging"/>
+		<module name="javax.el.api"/> 
+	</exclusions>
+	<!-- just as an example on how to put dependencies
+    <dependencies>  
+	    <module name="com.fasterxml.classmate"/>
+	    <module name="org.jboss.logging"/> 
+    </dependencies>
+	 -->
+  </deployment>
+</jboss-deployment-structure>

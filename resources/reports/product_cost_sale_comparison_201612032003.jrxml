@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2016-12-15T15:14:37 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="product_cost_sale_comparison_201612032003" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="93c64388-a387-4639-b304-508681be5c32">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter (3)"/>
+	<parameter name="main_title_label" class="java.lang.String"/>
+	<parameter name="report_emission_date_label" class="java.lang.String"/>
+	<parameter name="report_emission_date" class="java.lang.String"/>
+	<parameter name="currency_label" class="java.lang.String"/>
+	<parameter name="currency" class="java.lang.String"/>
+	<parameter name="begin_date_label" class="java.lang.String"/>
+	<parameter name="begin_date" class="java.lang.String"/>
+	<parameter name="end_date_label" class="java.lang.String"/>
+	<parameter name="end_date" class="java.lang.String"/>
+	<parameter name="product_label" class="java.lang.String"/>
+	<parameter name="product_quantity_label" class="java.lang.String"/>
+	<parameter name="product_sale_price_acumulated_label" class="java.lang.String"/>
+	<parameter name="product_production_cost_acumulated_label" class="java.lang.String"/>
+	<parameter name="product_profit_label" class="java.lang.String"/>
+	<parameter name="product_sale_date_label" class="java.lang.String"/>
+	<parameter name="sum_sale_invoice_item_quantity_formatted" class="java.lang.String"/>
+	<parameter name="sum_sale_price_acumulated_formatted" class="java.lang.String"/>
+	<parameter name="sum_production_cost_acumulated_formatted" class="java.lang.String"/>
+	<parameter name="sum_profit_formatted" class="java.lang.String"/>
+	<parameter name="totals_label" class="java.lang.String"/>
+	<parameter name="increase_over_cost_for_sale_price_label" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="product" class="java.lang.String"/>
+	<field name="sale_invoice_item_quantity_formatted" class="java.lang.String"/>
+	<field name="sale_price_acumulated_formatted" class="java.lang.String"/>
+	<field name="production_cost_acumulated_formatted" class="java.lang.String"/>
+	<field name="profit_formatted" class="java.lang.String"/>
+	<field name="sale_date_formatted" class="java.lang.String"/>
+	<field name="increase_over_cost_for_sale_price_formatted" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="73" splitType="Stretch">
+			<textField>
+				<reportElement x="80" y="10" width="400" height="60" uuid="ddca9fd0-3f0b-415a-b738-31497964218d"/>
+				<textElement textAlignment="Center">
+					<font size="16" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{main_title_label}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="117" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="10" width="120" height="20" uuid="06c26fbd-6487-4cf8-ae3e-5576eeb5dec1"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{report_emission_date_label}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="130" y="10" width="20" height="20" uuid="746cc8b8-8ceb-462a-88fd-9af546d1357b"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<text><![CDATA[ : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="160" y="10" width="120" height="20" uuid="ab8e5c9d-ddc0-4cb9-b3b6-7609bd7cb6f2"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{report_emission_date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="40" width="120" height="20" uuid="3bf0fe80-4e4e-4bd9-85a1-2e307ac2060b"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{begin_date_label}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="130" y="40" width="20" height="20" uuid="48ec6038-de26-4538-aeef-0394eae62bc4"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[ : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="160" y="40" width="120" height="20" uuid="d626d925-2976-4e7e-a60b-499b2156ef66"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{begin_date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="340" y="10" width="100" height="20" uuid="7c18ed10-f94f-46d7-911d-3c29025c4e6c"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{currency_label}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="450" y="10" width="10" height="20" uuid="3c1184c8-e460-41a1-8151-e31da677c60a"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[ : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="470" y="10" width="80" height="20" uuid="3a84027f-d42c-4442-9d14-0a94e792f17b"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{currency}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="70" width="120" height="20" uuid="85b2b59b-8389-4afe-8177-84c24669cb59"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{end_date_label}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="130" y="70" width="20" height="20" uuid="f93a1063-3847-4954-8e3e-c0f6a5d05282"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[ : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="160" y="70" width="120" height="20" uuid="37bbc5a4-3780-449d-8820-6d03be570922"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{end_date}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="35" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="90" height="30" uuid="b9845b3b-3091-4ccf-8d4d-b40f9dadc63d">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{product_label}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="150" y="0" width="75" height="30" uuid="3260b61d-aa82-4e3e-9145-47e1d706cc83">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{product_quantity_label}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="225" y="0" width="75" height="30" uuid="6f01cd8a-3cb7-4e56-9799-70b72c4f09aa"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{product_sale_price_acumulated_label}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="300" y="0" width="75" height="30" uuid="e345a1ec-6f40-45c2-9751-2a40df9f7ddc"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{product_production_cost_acumulated_label}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="375" y="0" width="75" height="30" uuid="f9bd8a70-2571-4303-959c-ac7bd15ec645"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{product_profit_label}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="450" y="0" width="75" height="30" uuid="0c285fd9-0af7-4cca-9b5c-741db034481d">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{product_sale_date_label}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="90" y="0" width="60" height="30" uuid="3ae00fc9-bd2e-4625-9903-d4a4635ef32a">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{increase_over_cost_for_sale_price_label}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="35" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="90" height="30" uuid="ee740f67-fd3b-436a-9b5d-790a883bbf86">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{product}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="150" y="0" width="75" height="30" uuid="8ba50147-9d0f-4c9d-a36b-d3b55fa35fd3"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sale_invoice_item_quantity_formatted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="225" y="0" width="75" height="30" uuid="aba8e915-cb66-47f0-a953-d56f9b5ac0e0"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sale_price_acumulated_formatted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="300" y="0" width="75" height="30" uuid="f28b2a05-e7db-442f-b050-90e8ff38d700"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{production_cost_acumulated_formatted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="375" y="0" width="75" height="30" uuid="dd4b886d-568b-4c23-8d39-5ff88f6155fe"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{profit_formatted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="450" y="0" width="75" height="30" uuid="aeb23520-88cc-44c3-98f0-be7f2367302b">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sale_date_formatted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="90" y="0" width="60" height="30" uuid="7f743649-430d-48f4-b4f6-6ff27ff1981a"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{increase_over_cost_for_sale_price_formatted}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="31" splitType="Stretch">
+			<textField>
+				<reportElement x="150" y="0" width="75" height="30" uuid="47776fca-06ec-41d8-a997-7d0504d6355a"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{sum_sale_invoice_item_quantity_formatted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="225" y="0" width="75" height="30" uuid="eb321f19-dbd2-4e70-8832-c38def835628"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{sum_sale_price_acumulated_formatted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="300" y="0" width="75" height="30" uuid="608eed13-3bbd-47f5-969d-12c01bca3a48"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{sum_production_cost_acumulated_formatted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="375" y="0" width="75" height="30" uuid="4fc2eaca-d907-45f2-bf79-fbfeb9496b2f"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{sum_profit_formatted}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="90" height="30" uuid="784242cc-2fb2-48a5-bf6d-49be156a55c0">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{totals_label}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+</jasperReport>

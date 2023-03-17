@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="py.com.kyron.sgp.persistence.cash.movements.management.dao.PurchaseInvoiceDAO">
+	
+	<sql id="selectPurchaseInvoiceDTO">
+		select
+				pi.id,
+				pi.id_person,
+				pi.id_currency,
+				pi.payment_condition,
+				pi.status,
+				pi.registration_date,
+				pi.emission_date,
+				pi.cancellation_date,
+				pi.annulment_date,
+				pi.annulment_reason_description,
+				pi.identifier_number,
+				pi.stamping_number,
+				pi.stamping_number_start_validity_date,
+				pi.stamping_number_end_validity_date,
+				pi.branch_office_address,
+				pi.branch_office_telephone_nbr,
+				pi.total_amount,
+				pi.value_added_amount,
+				pi.total_tax_amount,
+				pi.exempt_amount,
+				pi.value_added_tax_10_amount,
+				pi.value_added_tax_5_amount,
+				pi.tax_10_amount,
+				pi.tax_5_amount,
+				pi.bussines_name,
+				pi.bussines_ci_ruc,
+				pi.credit_purchase_fee_quantity,
+				pi.credit_purchase_fee_periodicity_days_quantity,
+				pi.credit_purchase_first_payment_fee_date,
+				pi.creation_user,
+				pi.creation_date,
+				pi.last_modif_user,
+				pi.last_modif_date
+		from
+				pms_purchase_invoice pi
+
+	</sql>
+	
+    <select id="pmsPurchaseInvoiceDTOIdBySequence" resultType="java.lang.Long" databaseId="postgre">
+			select nextval('pms_purchase_invoice_id_sq')
+    </select>
+
+    <select id="insertPurchaseInvoiceDTO" parameterType="PurchaseInvoiceDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_purchase_invoice
+        						(#{id},
+								#{id_person},
+								#{id_currency},
+								#{payment_condition},
+								#{emission_date},
+								#{identifier_number},
+								#{stamping_number},
+								#{stamping_number_start_validity_date},
+								#{branch_office_address},
+								#{branch_office_telephone_nbr},
+								#{exempt_amount},
+								#{value_added_tax_10_amount},
+								#{value_added_tax_5_amount},
+								#{credit_purchase_fee_quantity},
+								#{credit_purchase_fee_periodicity_days_quantity},
+								#{credit_purchase_first_payment_fee_date},
+								#{bussines_name},
+								#{bussines_ci_ruc},
+								#{creation_user})
+    </select>
+    
+    <select id="updatePurchaseInvoiceDTO" parameterType="PurchaseInvoiceDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_u_pms_purchase_invoice
+        						(#{id},
+								#{id_person},
+								#{id_currency},
+								#{payment_condition},
+								#{status},
+								#{emission_date},
+								#{identifier_number},
+								#{stamping_number},
+								#{stamping_number_start_validity_date},
+								#{branch_office_address},
+								#{branch_office_telephone_nbr},
+								#{exempt_amount},
+								#{value_added_tax_10_amount},
+								#{value_added_tax_5_amount},
+								#{credit_purchase_fee_quantity},
+								#{credit_purchase_fee_periodicity_days_quantity},
+								#{credit_purchase_first_payment_fee_date},
+								#{bussines_name},
+								#{bussines_ci_ruc},
+								#{last_modif_user})
+    </select>
+    
+    <select id="listPurchaseInvoiceDTO" parameterType="PurchaseInvoiceDTO" resultType="PurchaseInvoiceDTO" databaseId="postgre">
+        <include refid="selectPurchaseInvoiceDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and pi.id = #{id}
+				</if>
+				<if test="id_person != null">
+					and pi.id_person = #{id_person}
+				</if>
+				<if test="emissionDateBeginFilter != null and emissionDateEndFilter != null">
+					and pi.emission_date between #{emissionDateBeginFilter} and #{emissionDateEndFilter}
+				</if>
+				<if test="queryForExpenditureTaxReport != null and queryForExpenditureTaxReport == true">
+					and (pi.status = 'application.common.status.canceled' or pi.status = 'application.common.status.partial.balance')
+				</if>
+		</trim>
+				order by pi.id desc
+    </select>
+    
+	<!-- ######################################################################################################### -->
+	<!-- ######################################################################################################### -->
+	<!-- #########################  pms_purchase_invoice_item  ################################################### -->
+	<!-- ######################################################################################################### -->
+	<!-- ######################################################################################################### -->
+	
+	<sql id="selectPurchaseInvoiceItemDTO">
+		select
+				pii.id,
+				pii.id_purchase_invoice,
+				pii.id_raw_material,
+				pii.id_measurment_unit,
+				pii.quantity,
+				pii.unit_price_amount,
+				pii.exempt_amount,
+				pii.value_added_tax_10_amount,
+				pii.value_added_tax_5_amount,
+				pii.creation_user,
+				pii.creation_date,
+				pii.last_modif_user,
+				pii.last_modif_date
+
+		from
+				pms_purchase_invoice_item pii
+
+	</sql>
+	
+    <select id="pmsPurchaseInvoiceItemDTOIdBySequence" parameterType="long" resultType="java.lang.Long" databaseId="postgre">
+			<!--  select nextval('pms_purchase_invoice_item_id_sq') -->
+			select f_pms_purchase_invoice_item_id_sq(#{id})
+    </select>
+
+    <select id="insertPurchaseInvoiceItemDTO" parameterType="PurchaseInvoiceItemDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_pms_purchase_invoice_item
+        						(#{id},
+								#{id_purchase_invoice},
+								#{id_raw_material},
+								#{id_measurment_unit},
+								#{quantity},
+								#{unit_price_amount},
+								#{exempt_amount},
+								#{value_added_tax_10_amount},
+								#{value_added_tax_5_amount},
+								#{creation_user})
+    </select>
+    
+    <select id="listPurchaseInvoiceItemDTO" parameterType="PurchaseInvoiceItemDTO" resultType="PurchaseInvoiceItemDTO" databaseId="postgre">
+        <include refid="selectPurchaseInvoiceItemDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and pii.id = #{id}
+				</if>
+				<if test="id_purchase_invoice != null">
+					and pii.id_purchase_invoice = #{id_purchase_invoice}
+				</if>
+		</trim>
+				order by pii.id
+    </select>
+	
+    <delete id="deleteDiscardedPurchaseInvoiceItemDTObyPurchaseInvoiceDTO" parameterType="PurchaseInvoiceDTO" databaseId="postgre">
+       DELETE FROM pms_purchase_invoice_item
+       WHERE id_purchase_invoice = #{id}
+       <if test="listPurchaseInvoiceItemDTO != null">
+                 AND id not IN 
+                 <foreach item="item" index="index" collection="listPurchaseInvoiceItemDTO" open="(" separator="," close=")">
+					<if test="item.id != null">
+						#{item.id}
+					</if>
+        		</foreach>
+       </if>
+    </delete>
+    
+    
+    
+	<!-- ######################################################################################################### -->
+	<!-- ######################################################################################################### -->
+	<!-- #########################  pms_purchase_invoice_payment ################################################# -->
+	<!-- ######################################################################################################### -->
+	<!-- ######################################################################################################### -->
+	
+	<sql id="selectPurchaseInvoicePaymentDTO">
+		select
+				pip.id,
+				pip.id_purchase_invoice,
+				pip.id_currency,
+				pip.status,
+				pip.amount,
+				pip.purchase_invoice_balance,
+				pip.payment_number,
+				pip.registration_date,
+				pip.payment_due_date,
+				pip.cancellation_date,
+				pip.annulment_date,
+				pip.creation_user,
+				pip.creation_date,
+				pip.last_modif_user,
+				pip.last_modif_date,
+				pip.overdue_amount
+		from
+				pms_purchase_invoice_payment pip
+	</sql>
+	
+    <select id="listPurchaseInvoicePaymentDTO" parameterType="PurchaseInvoicePaymentDTO" resultType="PurchaseInvoicePaymentDTO" databaseId="postgre">
+        <include refid="selectPurchaseInvoicePaymentDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and pip.id = #{id}
+				</if>
+				<if test="id_purchase_invoice != null">
+					and pip.id_purchase_invoice = #{id_purchase_invoice}
+				</if>
+		</trim>
+				order by pip.id
+    </select>
+    <!-- 
+    <select id="effectuatePurchaseInvoicePaymentCashReceiptDocumentDTO" parameterType="CashReceiptDocumentDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_effectuate_purchase_invoice_payment
+        						(#{id_purchase_invoice_payment},
+								#{identifier_number},
+								#{emission_date},
+								#{overduePaymentamount},
+								#{creation_user})
+    </select>
+ -->
+    <select id="effectuatePurchaseInvoicePaymentCashReceiptDocumentDTO" parameterType="CashReceiptDocumentDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_effectuate_purchase_invoice_payment_with_credit_note
+        						(#{id_purchase_invoice_payment},
+								#{identifier_number},
+								#{emission_date},
+								#{overduePaymentamount},
+								#{id_purchase_invoice_credit_note},
+								#{pms_implementing_enterprise_ruc},
+								#{creation_user})
+    </select>	
+    
+	<!-- ######################################################################################################### -->
+	<!-- ######################################################################################################### -->
+	<!-- ######################### pms_purchase_invoice_credit_note ############################################## -->
+	<!-- ######################################################################################################### -->
+	<!-- ######################################################################################################### -->
+	
+	<sql id="selectPurchaseInvoiceCreditNoteDTO">
+		select
+				picn.id,
+				picn.id_person,
+				picn.id_currency,
+				picn.modified_documens_identifier_numbers,
+				picn.status,
+				picn.emission_date,
+				picn.emission_reason_description,
+				picn.validity_end_date,
+				picn.cancellation_date,
+				picn.annulment_date,
+				picn.annulment_reason_description,
+				picn.identifier_number,
+				picn.stamping_number,
+				picn.stamping_number_start_validity_date,
+				picn.stamping_number_end_validity_date,
+				picn.branch_office_address,
+				picn.branch_office_telephone_nbr,
+				picn.total_amount,
+				picn.value_added_amount,
+				picn.total_tax_amount,
+				picn.exempt_amount,
+				picn.value_added_tax_10_amount,
+				picn.value_added_tax_5_amount,
+				picn.tax_10_amount,
+				picn.tax_5_amount,
+				picn.bussines_name,
+				picn.bussines_ci_ruc,
+				picn.creation_user,
+				picn.creation_date,
+				picn.last_modif_user,
+				picn.last_modif_date,
+				picn.credit_note_balance
+
+		from
+				pms_purchase_invoice_credit_note picn
+				join 
+				pms_purchase_invoice_credit_note_modified_documents picnmd
+				on picn.id = picnmd.id_purchase_invoice_credit_note
+	</sql>
+	
+    <select id="pmsPurchaseInvoiceCreditNoteDTOIdBySequence" resultType="java.lang.Long" databaseId="postgre">
+			select nextval('pms_purchase_invoice_credit_note_id_sq')
+    </select>
+    
+    <select id="insertPurchaseInvoiceCreditNoteDTO" parameterType="PurchaseInvoiceCreditNoteDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_purchase_invoice_credit_note(#{id},
+        										#{id_purchase_invoice},
+												#{emission_date},
+												#{emission_reason_description},
+												#{identifier_number},
+												#{stamping_number},
+												#{stamping_number_start_validity_date},
+												#{branch_office_address},
+												#{branch_office_telephone_nbr},
+												#{creation_user})
+    </select>
+	
+    <select id="listPurchaseInvoiceCreditNoteDTO" parameterType="PurchaseInvoiceCreditNoteDTO" resultType="PurchaseInvoiceCreditNoteDTO" databaseId="postgre">
+        <include refid="selectPurchaseInvoiceCreditNoteDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and picn.id = #{id}
+				</if>
+				<if test="id_person != null">
+					and picn.id_person = #{id_person}
+				</if>
+				<if test="id_purchase_invoice != null">
+					and picnmd.id_purchase_invoice = #{id_purchase_invoice}
+				</if>
+				<if test="hasUsableCreditNoteBalance != null and hasUsableCreditNoteBalance == true">
+					and (picn.status = 'application.common.status.pending' or picn.status = 'application.common.status.partial.balance')
+				</if>
+				<if test="emissionDateBeginFilter != null and emissionDateEndFilter != null">
+					and picn.emission_date between #{emissionDateBeginFilter} and #{emissionDateEndFilter}
+				</if>
+		</trim>
+				order by picn.id desc
+    </select>
+    
+	<sql id="selectPurchaseInvoiceCreditNoteItemDTO">
+			select 
+				picni.id,
+				picni.id_purchase_invoice_credit_note,
+				picni.id_purchase_invoice_item,
+				picni.id_raw_material,
+				picni.id_measurment_unit,
+				picni.quantity,
+				picni.unit_price_amount,
+				picni.exempt_amount,
+				picni.value_added_tax_10_amount,
+				picni.value_added_tax_5_amount,
+				picni.creation_user,
+				picni.creation_date,
+				picni.last_modif_user,
+				picni.last_modif_date
+			from
+				pms_purchase_invoice_credit_note_item picni
+	</sql>
+	
+	<select id="pmsPurchaseInvoiceCreditNoteItemDTOIdBySequence" parameterType="long" resultType="java.lang.Long" databaseId="postgre">
+			<!-- select nextval('pms_order_item_id_sq')  -->
+			select f_pms_purchase_invoice_credit_note_item_id_sq(#{id})
+    </select>
+    
+    <select id="listPurchaseInvoiceCreditNoteItemDTO" parameterType="PurchaseInvoiceCreditNoteItemDTO" resultType="PurchaseInvoiceCreditNoteItemDTO" databaseId="postgre">
+        <include refid="selectPurchaseInvoiceCreditNoteItemDTO"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and picni.id = #{id}
+				</if>
+				<if test="id_purchase_invoice_credit_note != null">
+					and picni.id_purchase_invoice_credit_note = #{id_purchase_invoice_credit_note}
+				</if>
+		</trim>
+				order by picni.id
+    </select>
+    
+    <select id="insertPurchaseInvoiceCreditNoteItemDTO" parameterType="PurchaseInvoiceCreditNoteItemDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT 
+        		p_i_purchase_invoice_credit_note_item(#{id},
+        											#{id_purchase_invoice_credit_note},
+													#{id_purchase_invoice_item},
+													#{quantity},
+													#{creation_user})
+    </select>
+</mapper>

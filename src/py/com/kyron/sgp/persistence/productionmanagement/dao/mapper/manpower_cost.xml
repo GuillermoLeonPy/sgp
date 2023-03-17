@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="py.com.kyron.sgp.persistence.productionmanagement.dao.ManPowerCostDAO">
+	
+	<resultMap type="ManPowerCostDTO" id="ManPowerCostDTOMap">
+		<constructor>
+			<idArg column="id" javaType="long"/>
+		</constructor>
+		<result column="id_tariff" 	  	  	 property="id_tariff"			javaType="long"/>
+		<result column="tariff_amount" 	  	  	 property="tariff_amount"			javaType="java.math.BigDecimal"/>
+		<result column="registration_date" 	  	  	 property="registration_date"	javaType="java.util.Date"/>
+		<result column="validity_end_date" 	  	  	 property="validity_end_date"	javaType="java.util.Date"/>
+		<result column="creation_user" 	  	  	 property="creation_user"			javaType="string"/>
+		<result column="creation_date"    	 property="creation_date"			javaType="java.util.Date"/>
+		<result column="last_modif_user" 	  	  	 property="last_modif_user"			javaType="string"/>
+		<result column="last_modif_date"    	 property="last_modif_date"			javaType="java.util.Date"/>
+	</resultMap>
+
+
+	<sql id="selectManPowerCost">
+			select 
+					mpc.id,
+					mpc.id_tariff,
+					mpc.tariff_amount,
+					mpc.registration_date,
+					mpc.validity_end_date,
+					mpc.creation_user,
+					mpc.creation_date,
+					mpc.last_modif_user,
+					mpc.last_modif_date
+			from
+				pms_manpower_cost mpc
+	</sql>
+		
+    <select id="pmsManPowerCostDTOIdBySequence" resultType="java.lang.Long" databaseId="postgre">
+			select nextval('pms_manpower_cost_id_sq')
+    </select>
+    
+    <select id="insertManPowerCostDTO" parameterType="ManPowerCostDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT  p_i_pms_manpower_cost
+        						(#{id},
+        						#{id_tariff},
+        						#{tariff_amount},
+        						#{registration_date},
+        						#{creation_user})
+    </select>    
+
+    <select id="updateManPowerCostDTO" parameterType="ManPowerCostDTO" resultType="java.lang.String" databaseId="postgre">
+        SELECT  p_u_pms_manpower_cost
+        						(#{id},
+        						#{validity_end_date},
+        						#{last_modif_user})
+    </select>  
+
+
+    <select id="listManPowerCostDTO" parameterType="ManPowerCostDTO" resultMap="ManPowerCostDTOMap">
+        <include refid="selectManPowerCost"/>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">				
+				<if test="id != null">
+					and mpc.id = #{id}
+				</if>
+				<if test="active != null and active == true">
+					and mpc.validity_end_date is null
+				</if>
+				<if test="active != null and active == false">
+					and mpc.validity_end_date is not null
+				</if>
+		</trim>
+				order by mpc.validity_end_date desc
+    </select>
+
+    <select id="getManPowerCostValidRowId" resultType="java.lang.Long" databaseId="postgre">
+			select id from pms_manpower_cost where validity_end_date is null 
+    </select>
+
+    <!--    
+   
+    <delete id="deleteApplicationSecurityRolProgramDTO" parameterType="ApplicationSecurityRolProgramDTO" databaseId="postgre">
+		delete from 
+			app_sec_rol_program
+   		where 
+    		id_app_sec_rol = #{id_app_sec_rol}
+    		and
+    		id_app_sec_program = #{id_app_sec_program}
+	</delete>	      
+--> 
+
+</mapper>
