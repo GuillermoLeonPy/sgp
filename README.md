@@ -16,6 +16,6 @@ Details about the application
 
 * The graphical interface is built with Vaadin framework (https://vaadin.com/) version 7
 
-* Uses Spring framework version 4 to manage the lifecycle of the back end objects; services and daos
+* Uses Spring framework version 4 to manage the lifecycle of the back end objects; services and daos. The definitions are in the WebContent/WEB-INF/sgp-application-context.xml file
 
 * Tested on Wildly application server version 9.0.2
